@@ -1,0 +1,31 @@
+# S3 — Viridian Forest traversal (the maze that eats models)
+#
+# Anchor recorded 2026-07-19 (`states/s3_forest.state`): standing just inside
+# the south end of Viridian Forest, post-starter. Re-record on a fresh machine
+# with `pokebench play --capture VIRIDIAN_FOREST --out
+# scenarios/states/s3_forest.state`. The forest is the classic model-killer
+# (mazelike, wild encounters); expect a high stuck-loop index. Mirror any
+# verified geometry into tests/fake_world.py.
+
+id: s3_viridian_forest
+name: "S3 — Viridian Forest traversal"
+
+anchor:
+  state_file: states/s3_forest.state # local-only, never committed (see header)
+  requirements:
+    map: VIRIDIAN_FOREST
+    min_party_count: 1
+
+objective: >
+  You are near the south end of Viridian Forest. Cross the forest and exit
+  through the north gate toward Pewter City. Reaching the north gate completes
+  the task. Beware wild Pokémon encounters and dead-end paths.
+
+success:
+  map: VIRIDIAN_FOREST_NORTH_GATE # RAM-checkable: wCurMap == 0x2F
+
+caps:
+  agent_turns: 600
+  wall_clock_minutes: 45
+  max_tokens: 1000000
+  max_usd: 1.00

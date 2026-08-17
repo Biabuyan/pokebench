@@ -1,0 +1,223 @@
+# Provenance for results.json — the exact run traces each row was scored from.
+#
+# The traces themselves live under runs/, which is gitignored (they are large and
+# machine-local), so this list is the only surviving record of WHICH runs produced the
+# published table. Regenerate results.json with:
+#
+#   python -m uv run pokebench score $(grep -v '^#' results_traces.txt) --out results.json
+#
+# Selecting these directories involved real judgement calls; the exclusions are as
+# load-bearing as the inclusions and are explained at the bottom, in this file, which is
+# tracked and public. HANDOFF.md's M3 section has additional narrative detail behind the
+# same decisions, but HANDOFF.md is a local, gitignored working file (since 2026-08-04) and
+# is NOT in a fresh clone of this public repo — do not treat it as a citation a reader can
+# follow. The exclusion comments below are written to be self-contained for that reason.
+#
+# AUDITED 2026-08-04 by metrics/validity.py (build 1). The machine predicate was run over both
+# lists and reproduces this file's hand-curation exactly:
+#   - the 54 included dirs below: 0 flagged (no false positives)
+#   - the 9 excluded dirs at the bottom: 9 flagged --
+#       4 output_ceiling_truncation  (the reasoning-ON sonnet runs)
+#       4 incomplete                 (both no-summary seeds + both _aborted_outputcap seeds)
+#       1 cap_mismatch               (the wall-clock-discarded qwen seed, under --turn-matched)
+# Regenerating results.json at schema 3 changed no published value.
+#
+# Regenerated 2026-08-06 at schema 4 (adds `reasoning_provenance` to every row — see
+# metrics/results.py's schema-4 comment). Same 54 included / 9 excluded dirs below,
+# unchanged; verified field-by-field that no pre-existing value moved, the only addition
+# is the new field.
+#
+# One divergence worth knowing: the _aborted_outputcap seeds are excluded HERE for truncation but
+# flagged `incomplete` by the machine — they were killed before writing a summary (one after a
+# single turn), so there is no truncation signal left to detect. Same verdict, different reason.
+#
+# Exclusions are now ALSO machine-readable inside results.json (schema 3, `exclusions[]`), so this
+# file is no longer the only record. Keep the two consistent; prefer regenerating over hand-editing.
+#
+# Regenerated 2026-08-15 at schema 5 (adds `median_turns_since_new_tile` and a
+# `turns_since_new_tile` seed_values array — the "was it turn-limited?" diagnostic, see
+# metrics/score.py's `_turns_since_new_tile` and CLAUDE.md's dated 2026-08-15 bullet / caveat 7).
+# Same 54 included / 9 excluded dirs below, unchanged; diffed field-by-field against the schema-4
+# artifact — the only differences across all 18 rows are `schema`, `generated`, and the two new
+# fields, zero pre-existing values moved.
+#
+# Regenerated 2026-08-16 to ADD S4 (Viridian Mart purchase) — 5 models x 1 scenario, still schema
+# 5, no new fields. **This is no longer a single-command reproduction** — the one-liner above still
+# reproduces the 54/9 M3+M2 dirs unchanged, but S4's block further down must be scored SEPARATELY
+# with `--turn-matched`, because S4's invalid seeds are left un-commented in that block (unlike
+# every exclusion above, which is curated by omission) so the eval-integrity gate classifies them
+# mechanically and `results.json`'s `exclusions[]` carries the real reason/detail/evidence for
+# each. Running `--turn-matched` over the WHOLE file in one command would also reclassify the M2
+# haiku baseline just above (dollar-bound by design, stop_reason `max_usd`/`max_tokens`) as
+# `cap_mismatch` and silently break three already-published rows — that is precisely why S4 is a
+# second, separate `pokebench score` invocation, not a flag added to the one above. Reproduce with:
+#
+#   python -m uv run pokebench score $(grep -v '^#' results_traces.txt | grep -v sweep_s4) \
+#       --out results.json
+#   python -m uv run pokebench score $(grep -v '^#' results_traces.txt | grep sweep_s4) \
+#       --turn-matched --out results.json
+#
+# (`--out` merges into the existing file by (model, scenario, tier) — see `metrics/results.py`'s
+# `merge_rows` — so the two invocations compose regardless of order.) Diffed the resulting
+# results.json against the pre-S4 artifact field-by-field: all 18 pre-existing rows are byte-
+# identical except `schema`/`generated` (both file-level, not per-row); the only rows added are
+# the 5 new S4 rows.
+
+# --- M3 turn-matched sweep: 5 models x 3 scenarios x 3 seeds, 100-turn cap, tier-0 ----
+
+# sonnet (claude-sonnet-4-6) — reasoning OFF; see the exclusion note on the ON runs.
+runs/bench/s1_exit_pallet-sonnet-t0/20260720-120830/seed0
+runs/bench/s1_exit_pallet-sonnet-t0/20260720-120830/seed1
+runs/bench/s1_exit_pallet-sonnet-t0/20260720-120830/seed2
+runs/bench/s2_viridian_pokecenter-sonnet-t0/20260720-122922/seed0
+runs/bench/s2_viridian_pokecenter-sonnet-t0/20260720-122922/seed1
+runs/bench/s2_viridian_pokecenter-sonnet-t0/20260720-122922/seed2
+# S3's three sonnet seeds span two bench groups (the first group's seed1 never finished).
+runs/bench/s3_viridian_forest-sonnet-t0/20260720-125035/seed0
+runs/bench/s3_viridian_forest-sonnet-t0/20260721-090018/seed0
+runs/bench/s3_viridian_forest-sonnet-t0/20260721-090018/seed1
+
+# gpt (gpt-5.6-terra)
+runs/bench/s1_exit_pallet-gpt-t0/20260720-113400/seed0
+runs/bench/s1_exit_pallet-gpt-t0/20260720-113400/seed1
+runs/bench/s1_exit_pallet-gpt-t0/20260720-113400/seed2
+runs/bench/s2_viridian_pokecenter-gpt-t0/20260720-114000/seed0
+runs/bench/s2_viridian_pokecenter-gpt-t0/20260720-114000/seed1
+runs/bench/s2_viridian_pokecenter-gpt-t0/20260720-114000/seed2
+runs/bench/s3_viridian_forest-gpt-t0/20260720-115320/seed0
+runs/bench/s3_viridian_forest-gpt-t0/20260720-115320/seed1
+runs/bench/s3_viridian_forest-gpt-t0/20260720-115320/seed2
+
+# gemini (gemini-3.5-flash) — the sweep's best performer, 5/9
+runs/bench/s1_exit_pallet-gemini-t0/20260720-115026/seed0
+runs/bench/s1_exit_pallet-gemini-t0/20260720-115026/seed1
+runs/bench/s1_exit_pallet-gemini-t0/20260720-115026/seed2
+runs/bench/s2_viridian_pokecenter-gemini-t0/20260720-115337/seed0
+runs/bench/s2_viridian_pokecenter-gemini-t0/20260720-115337/seed1
+runs/bench/s2_viridian_pokecenter-gemini-t0/20260720-115337/seed2
+runs/bench/s3_viridian_forest-gemini-t0/20260720-120258/seed0
+runs/bench/s3_viridian_forest-gemini-t0/20260720-120258/seed1
+runs/bench/s3_viridian_forest-gemini-t0/20260720-120258/seed2
+
+# gemini-lite (gemini-3.1-flash-lite) — a lite weight class, not Google's answer to Sonnet
+runs/bench/s1_exit_pallet-gemini-lite-t0/20260720-114850/seed0
+runs/bench/s1_exit_pallet-gemini-lite-t0/20260720-114850/seed1
+runs/bench/s1_exit_pallet-gemini-lite-t0/20260720-114850/seed2
+runs/bench/s2_viridian_pokecenter-gemini-lite-t0/20260720-115429/seed0
+runs/bench/s2_viridian_pokecenter-gemini-lite-t0/20260720-115429/seed1
+runs/bench/s2_viridian_pokecenter-gemini-lite-t0/20260720-115429/seed2
+runs/bench/s3_viridian_forest-gemini-lite-t0/20260720-120020/seed0
+runs/bench/s3_viridian_forest-gemini-lite-t0/20260720-120020/seed1
+runs/bench/s3_viridian_forest-gemini-lite-t0/20260720-120020/seed2
+
+# qwen-local (qwen3.5:4b via Ollama) — free but ~1.6 min/turn on CPU, so ~2.7 h per seed.
+# S1's third seed was run separately on 2026-07-28 after the first attempt died on wall-clock.
+runs/bench/s1_exit_pallet-qwen-local-t0/20260721-091812/seed0
+runs/bench/s1_exit_pallet-qwen-local-t0/20260721-091812/seed1
+runs/bench/s1_exit_pallet-qwen-local-t0/20260728-083301/seed0
+runs/bench/s2_viridian_pokecenter-qwen-local-t0/20260726-213502/seed0
+runs/bench/s2_viridian_pokecenter-qwen-local-t0/20260726-213502/seed1
+runs/bench/s2_viridian_pokecenter-qwen-local-t0/20260726-213502/seed2
+runs/bench/s3_viridian_forest-qwen-local-t0/20260727-040534/seed0
+runs/bench/s3_viridian_forest-qwen-local-t0/20260727-040534/seed1
+runs/bench/s3_viridian_forest-qwen-local-t0/20260727-040534/seed2
+
+# --- M2 fixed-budget baseline: haiku only. NOT turn-matched, do not put in the M3 table.
+# These carry cap_turns 300/400/600 and are dollar-bound. Kept because they are an honest
+# result on their own axis; filter on cap_turns to keep them out of cross-model rankings.
+runs/bench/s1_exit_pallet-haiku-t0/20260720-091301/seed0
+runs/bench/s1_exit_pallet-haiku-t0/20260720-091301/seed1
+runs/bench/s1_exit_pallet-haiku-t0/20260720-091301/seed2
+runs/bench/s2_viridian_pokecenter-haiku-t0/20260720-092531/seed0
+runs/bench/s2_viridian_pokecenter-haiku-t0/20260720-092531/seed1
+runs/bench/s2_viridian_pokecenter-haiku-t0/20260720-092531/seed2
+runs/bench/s3_viridian_forest-haiku-t0/20260720-093948/seed0
+runs/bench/s3_viridian_forest-haiku-t0/20260720-093948/seed1
+runs/bench/s3_viridian_forest-haiku-t0/20260720-093948/seed2
+
+# --- S4 sweep: Viridian Mart purchase (menu/shop transaction), 5 models, 100-turn cap, tier-0 ---
+#
+# NOT curated by omission like every block above -- see the 2026-08-16 provenance note up top for
+# why. Every attempted seed is listed below, including the 10 that the eval-integrity gate (run
+# with --turn-matched, separately from the rest of this file) rejects: 5 `cap_mismatch` (sonnet hit
+# `max_usd`/`max_tokens` before the 100-turn cap during a real Anthropic credit-limit incident on
+# 2026-08-15 -- see the sonnet exclusions in results.json for the per-seed stop reasons) and 4
+# `incomplete` (the same incident: the sweep executor crashed mid-cell and left summary-less
+# directories, 1 with 38 turns of run.jsonl and 3 with 0 -- the same "no summary.json" tell that
+# first exposed the 429 sweep incident), plus 1 gpt `cap_mismatch` (max_usd, unrelated to the
+# outage). sonnet's valid 3/3 and gpt's valid 3/3 therefore come from a 12- and 4-directory attempt
+# pool respectively, both listed in full immediately below.
+
+# gemini (gemini-3.5-flash) — 3/3 valid, 3/3 success
+runs/sweep_s4/s4_viridian_mart-gemini-t0/20260815-031009/seed0
+runs/sweep_s4/s4_viridian_mart-gemini-t0/20260815-031206/seed0
+runs/sweep_s4/s4_viridian_mart-gemini-t0/20260815-031629/seed0
+
+# gemini-lite (gemini-3.1-flash-lite) — 3/3 valid, 3/3 success
+runs/sweep_s4/s4_viridian_mart-gemini-lite-t0/20260815-025518/seed0
+runs/sweep_s4/s4_viridian_mart-gemini-lite-t0/20260815-031700/seed0
+runs/sweep_s4/s4_viridian_mart-gemini-lite-t0/20260815-031854/seed0
+
+# gpt (gpt-5.6-terra) — 3/3 valid, 3/3 success; 1 excluded (cap_mismatch, max_usd)
+runs/sweep_s4/s4_viridian_mart-gpt-t0/20260815-030612/seed0
+runs/sweep_s4/s4_viridian_mart-gpt-t0/20260815-030936/seed0
+runs/sweep_s4/s4_viridian_mart-gpt-t0/20260815-030954/seed0
+runs/sweep_s4/s4_viridian_mart-gpt-t0/20260815-030632/seed0
+
+# qwen-local (qwen3.5:4b via Ollama) — 3/3 valid, 0/3 success (max_turns)
+runs/sweep_s4/s4_viridian_mart-qwen-local-t0/20260815-172315/seed0
+runs/sweep_s4/s4_viridian_mart-qwen-local-t0/20260815-194359/seed0
+runs/sweep_s4/s4_viridian_mart-qwen-local-t0/20260815-220512/seed0
+
+# sonnet (claude-sonnet-4-6) — 3/3 valid, 3/3 success; 9 excluded (see the block header above and
+# the EXCLUDED section below: the 2026-08-15 Anthropic credit outage during this sweep).
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-025703/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-030055/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-034830/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-025758/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-030135/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-030353/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-032249/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-032946/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-033730/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-034747/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-034749/seed0
+runs/sweep_s4/s4_viridian_mart-sonnet-t0/20260815-034750/seed0
+
+# --- Deliberately EXCLUDED, and why -----------------------------------------------------
+#
+# runs/bench/s1_exit_pallet-sonnet-t0/20260721-092407/seed{0,1,2}
+# runs/bench/s2_viridian_pokecenter-sonnet-t0/20260721-103105/seed0
+#   Sonnet with reasoning ON. The harness's shared max_output_tokens=1024 is also the
+#   thinking budget, so these hit the ceiling on 39% of turns and emitted NO tool call on
+#   37%. They measure the ceiling, not the model.
+#
+# runs/bench/s2_viridian_pokecenter-sonnet-t0/20260728-101506/_aborted_outputcap_seed0
+# runs/bench/s3_viridian_forest-sonnet-t0/20260728-102030/_aborted_outputcap_seed0
+#   Killed at 31 and 1 turns on 2026-07-28 once the truncation above was diagnosed mid-run
+#   (they would have reproduced it). $0.60 spent.
+#
+# runs/bench/s1_exit_pallet-qwen-local-t0/20260721-091812/_discarded_wallclock_seed2
+#   Died on the wall-clock cap at 86 turns, before that cap was lifted for the local leg.
+#
+# runs/bench/s2_viridian_pokecenter-sonnet-t0/20260721-103105/seed1
+# runs/bench/s3_viridian_forest-sonnet-t0/20260720-125035/seed1
+#   Incomplete — no summary.json.
+#
+# runs/bench/s2_viridian_pokecenter-haiku-t0/20260719-{152600,153859}
+# runs/bench/s3_viridian_forest-haiku-t0/20260719-152740
+#   Superseded single-seed haiku groups from before the M2 sweep.
+#
+# S4's 10 excluded seeds (2026-08-15, 5 cap_mismatch + 4 incomplete for sonnet, 1 cap_mismatch
+# for gpt) are deliberately NOT re-listed here as bare `runs/...` lines the way every entry above
+# is. They are already present, uncommented, in the S4 active block above (see its header) and
+# already machine-scored by `pokebench score --turn-matched`, so results.json's own sonnet/gpt S4
+# rows carry the real reason/detail/stop_reason/turns/evidence per seed in their `exclusions[]`
+# array -- read them there. Re-listing the same paths here as `# runs/...` lines would double-
+# count them against site.py's `_count_excluded` parser (once here as a "curated omission", once
+# more via each row's own `seeds_excluded`), which is the 12-vs-9 miscount CLAUDE.md documents,
+# in a new place, for a different reason. In short: all 10 (gpt's 20260815-030632 seed0; sonnet's
+# 20260815-025758/-030135/-030353 [cap_mismatch, max_usd], -032249/-032946 [cap_mismatch,
+# max_tokens], -033730/-034747/-034749/-034750 [incomplete]) happened during a real Anthropic
+# credit-limit outage mid-sweep on 2026-08-15 -- the executor's calls started failing partway
+# through, which is why sonnet alone needed 12 attempts for 3 valid seeds.

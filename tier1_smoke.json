@@ -1,0 +1,54 @@
+{
+  "schema": 4,
+  "generated": "2026-08-06T10:46:26",
+  "rows": [
+    {
+      "model": "gemini",
+      "scenario": "s1_exit_pallet",
+      "tier": 1,
+      "seeds": 1,
+      "seeds_valid": 1,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 10,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 1
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 10,
+      "median_input_tokens": 37431,
+      "median_output_tokens": 1086,
+      "median_cost_usd": 0.065921,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.2222,
+      "median_tiles_explored": 8,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "seed_values": {
+        "success": [
+          false
+        ],
+        "turns": [
+          10
+        ],
+        "cost_usd": [
+          0.065921
+        ],
+        "tiles_explored": [
+          8
+        ],
+        "idle_rate": [
+          0.2222
+        ],
+        "no_tool_call_rate": [
+          0.0
+        ]
+      }
+    }
+  ]
+}

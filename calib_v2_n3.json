@@ -1,0 +1,66 @@
+{
+  "schema": 4,
+  "generated": "2026-08-14T20:29:23",
+  "rows": [
+    {
+      "model": "sonnet",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "recorded_on",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 308379,
+      "median_output_tokens": 14424,
+      "median_cost_usd": 1.141497,
+      "median_stuck_index": 0.99,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.9798,
+      "median_tiles_explored": 2,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          1.458267,
+          1.141497,
+          1.119726
+        ],
+        "tiles_explored": [
+          6,
+          2,
+          2
+        ],
+        "idle_rate": [
+          0.7677,
+          0.9798,
+          0.9798
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  ]
+}

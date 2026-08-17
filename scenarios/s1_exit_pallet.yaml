@@ -1,0 +1,58 @@
+# S1 — Bedroom -> exit Pallet Town (navigation baseline)
+#
+# Anchor state must be recorded AFTER obtaining the starter (and the rival
+# fight): before that, Oak intercepts you at the Route 1 grass line, so the
+# scenario would be unwinnable. `pokebench play` captures this automatically.
+
+id: s1_exit_pallet
+name: "S1 — Bedroom → exit Pallet Town"
+
+anchor:
+  state_file: states/s1_bedroom.state
+  requirements:
+    map: REDS_HOUSE_2F
+    min_party_count: 1 # starter obtained
+
+# Objective shown to the agent (appended to the fixed system prompt by the M1
+# loop). Same text for every model — states the goal, not the route.
+objective: >
+  You are inside your house in Pallet Town, upstairs in your bedroom. Leave the
+  house and travel north out of Pallet Town onto Route 1, the grassy path
+  leading north out of town. Reaching Route 1 completes the task.
+
+success:
+  map: ROUTE_1 # RAM-checkable: wCurMap == 0x0C
+
+caps: # enforced in runner code (LLM10), never in the prompt
+  agent_turns: 300
+  wall_clock_minutes: 30
+  max_tokens: 400000 # cumulative context+output tokens across the run
+  max_usd: 0.50 # dollar kill switch — stops the run before the next model call
+
+# M0 spike route — data, not code, so tile-geometry fixes are one-line edits.
+# Phases are dispatched by current map, so the route resumes from anywhere.
+spike_route:
+  - phase: REDS_HOUSE_2F # bedroom: stairs are the top-right corner warp
+    strategy: greedy
+    dirs: [up, right]
+  # Gen-1 physics: stairs warp on entry, but door mats are COLLISION warps —
+  # they only fire when you stand on the mat and press into the door edge
+  # (pokered CheckWarpsCollision). So the ground floor needs explicit legs:
+  # down the east wall, along the bottom row to the mats at (2,7)/(3,7),
+  # then press DOWN.
+  - phase: REDS_HOUSE_1F
+    strategy: legs
+    legs:
+      - { dir: down, until: { y_gte: 7 }, slide: left }
+      - { dir: left, until: { x_lte: 3 }, slide: up }
+      - { dir: down, until: { map: PALLET_TOWN }, slide: right }
+  # Verified geometry (run 2): exit mat drops you at (5,6); the corridor
+  # between the houses is x=8-10 (Blue's west wall is x=11, his DOOR — an
+  # entry warp! — is at (13,5)). So: east along y=6 to the corridor, then
+  # straight north up column 10. Slide LEFT if the treeline blocks: left is
+  # toward the corridor; right walks into Blue's front door.
+  - phase: PALLET_TOWN
+    strategy: legs
+    legs:
+      - { dir: right, until: { x_gte: 10 }, slide: up }
+      - { dir: up, until: { map: ROUTE_1 }, slide: left }

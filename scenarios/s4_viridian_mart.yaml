@@ -1,0 +1,105 @@
+# S4 — Viridian Mart purchase (menu/shop transaction, a genuinely different
+# axis from S1-S3's pure overworld navigation)
+#
+# Anchor recorded 2026-08-15 (`states/s4_mart_unlocked.state`): standing just
+# inside VIRIDIAN_MART at its interior door tile (3,7), post-starter, with
+# Oak's Parcel ALREADY delivered to Professor Oak. That last clause is load-
+# bearing, not incidental -- read on.
+#
+# **Why this anchor is NOT a fresh first-visit save state (a real finding,
+# not a design preference).** Entering VIRIDIAN_MART for the very first time
+# triggers a mandatory, un-skippable cutscene: an NPC hands the player "OAK's
+# PARCEL" and auto-walks them a couple of tiles. Worse, THE SHOP ITSELF IS
+# LOCKED until that parcel is delivered back to Professor Oak in Pallet Town
+# -- talking to the same clerk before that just repeats "Okay! Say hi to
+# PROF. OAK for me!" and never opens the BUY/SELL menu, no matter how the
+# clerk is approached. This is a real, documented gen-1 soft lock (funnels
+# the player back to Oak's lab first), discovered live with
+# `tools/probe_s4_route.py` (confirmed twice: talking to the clerk on a
+# pristine anchor never produces a shop menu; the identical clerk opens the
+# shop normally after the round trip to Oak's lab and back). Anchoring S4 on
+# a fresh visit would ship a scenario whose success predicate can NEVER fire
+# -- exactly what CLAUDE.md's S3 postmortem warns against ("do not ship a
+# scenario whose predicate has never fired"). See `tests/fake_world.py::
+# build_s4_mart_world()`'s docstring for the full evidence chain.
+#
+# **How this anchor was actually captured -- NOT `pokebench play` (a
+# deviation from S1-S3's convention, flagged deliberately).** Every other
+# scenario's anchor needs a human at the keyboard. This one was captured
+# entirely by SCRIPT, chained from S2's own `states/s2_route1.state` anchor,
+# because the whole round trip (Mart -> Route 1 -> Pallet -> Oak's Lab ->
+# deliver -> back to the Mart) is itself a deterministic, already-verified
+# route -- scripting it is strictly more reproducible than a human replaying
+# ~10 minutes of gen-1 dialogue by hand, and `tools/probe_s4_route.py`
+# already had to walk it live to discover the soft lock in the first place.
+# To reproduce on a fresh machine (no human input needed beyond having the
+# ROM + `states/s2_route1.state`):
+#   1. Load `states/s2_route1.state`, BFS ROUTE_1 -> VIRIDIAN_CITY ->
+#      VIRIDIAN_MART (`python tools/probe_s4_route.py locate`).
+#   2. From the VIRIDIAN_MART landing tile, dismiss the parcel cutscene with
+#      ~30 `tap("a")` calls (settle ~40-90 frames each; it stops changing
+#      once the textbox is gone -- see `build_s4_mart_world()`'s docstring
+#      for the exact confirmed transcript).
+#   3. BFS VIRIDIAN_MART -> VIRIDIAN_CITY -> ROUTE_1 -> PALLET_TOWN ->
+#      OAKS_LAB, walk up to Oak (`dpad("up")` until blocked, from the lab's
+#      own entry point), and dismiss his (long -- ~70 taps) delivery +
+#      Pokédex cutscene the same way.
+#   4. BFS back OAKS_LAB -> PALLET_TOWN -> ROUTE_1 -> VIRIDIAN_CITY ->
+#      VIRIDIAN_MART, `settle(90)` on the final entry warp (same "same-frame
+#      read across a warp is unreliable" caveat as S2's Pokécenter), then
+#      `save_state()` here.
+# `tools/probe_s4_route.py`'s `locate` mode automates step 1 and the BFS legs
+# of 3-4; the two dialogue-dismissal stretches were driven by hand this
+# session and are documented verbatim in `tests/fake_world.py::
+# build_s4_mart_world()`'s docstring so a future session doesn't have to
+# rediscover the exact tap counts by trial and error.
+
+id: s4_viridian_mart
+name: "S4 — Viridian Mart purchase"
+
+anchor:
+  state_file: states/s4_mart_unlocked.state # local-only, never committed (see header)
+  requirements:
+    map: VIRIDIAN_MART
+    min_party_count: 1
+
+objective: >
+  You are standing just inside the Viridian City Poké Mart. Walk up to the
+  shop counter and talk to the clerk, then buy any item from the BUY menu.
+  Completing a purchase (confirming the transaction so your money decreases)
+  finishes this scenario.
+
+success:
+  map: VIRIDIAN_MART # RAM-checkable: wCurMap == 0x2A
+  money_lte: 2900 # starting money is $3000; the cheapest item is $100 (ANTIDOTE)
+
+caps:
+  agent_turns: 150
+  wall_clock_minutes: 20
+  max_tokens: 300000
+  max_usd: 0.30
+
+# M0-style scripted oracle (Improvement 3, 2026-08-15) — proves the scenario
+# is winnable and its success predicate actually fires (not just the map
+# clause: `cli.py`'s `_spike_verdict` now runs the REAL `success:` block via
+# `make_success_check`, the same predicate a real agent run is scored
+# against — the old inline `final.map_name == success_map` check would have
+# reported PASS here even if the "buttons" phase below did nothing at all).
+# Discovered live against the real ROM with `tools/probe_s4_route.py`
+# (`dpad()`/`tap()` exclusively — one-tile/one-press guaranteed) and
+# confirmed end-to-end via `pokebench spike-s1 --scenario
+# scenarios/s4_viridian_mart.yaml` (PASS). See `tests/fake_world.py::
+# build_s4_mart_world()`'s docstring for the full transcript of what each of
+# the 7 button taps does on screen (BUY -> item list -> qty -> Y/N confirm).
+#
+# The "buttons" strategy (new here, `harness/navigate.py`) is deliberately
+# NOT "steps": a menu tap never moves the player, so it must not fail on
+# "did not move" the way a walking step correctly does.
+spike_route:
+  - phase: VIRIDIAN_MART
+    strategy: steps
+    steps: [up, up, left]
+  - phase: VIRIDIAN_MART
+    strategy: buttons
+    buttons: [a, a, a, a, a, a, a]
+    settle_frames: 45 # verified minimum -- see BUTTON_MACRO_SETTLE_FRAMES in navigate.py

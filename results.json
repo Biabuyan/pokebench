@@ -1,0 +1,1623 @@
+{
+  "schema": 5,
+  "generated": "2026-08-16T01:48:55",
+  "rows": [
+    {
+      "model": "gemini",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 28,
+      "median_turns": 28,
+      "median_input_tokens": 101831,
+      "median_output_tokens": 2380,
+      "median_cost_usd": 0.167115,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0357,
+      "median_idle_rate": 0.1111,
+      "median_tiles_explored": 18,
+      "median_no_tool_call_rate": 0.0357,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          28,
+          31,
+          17
+        ],
+        "cost_usd": [
+          0.220835,
+          0.167115,
+          0.120245
+        ],
+        "tiles_explored": [
+          21,
+          18,
+          17
+        ],
+        "idle_rate": [
+          0.1111,
+          0.4333,
+          0.0
+        ],
+        "no_tool_call_rate": [
+          0.0357,
+          0.1935,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "gemini-lite",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 232036,
+      "median_output_tokens": 2478,
+      "median_cost_usd": 0.06173,
+      "median_stuck_index": 0.74,
+      "median_invalid_rate": 0.1,
+      "median_idle_rate": 0.7172,
+      "median_tiles_explored": 6,
+      "median_no_tool_call_rate": 0.1,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 54,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.061315,
+          0.0649,
+          0.06173
+        ],
+        "tiles_explored": [
+          15,
+          5,
+          6
+        ],
+        "idle_rate": [
+          0.7071,
+          0.7576,
+          0.7172
+        ],
+        "no_tool_call_rate": [
+          0.1,
+          0.1,
+          0.07
+        ],
+        "turns_since_new_tile": [
+          12,
+          54,
+          62
+        ]
+      }
+    },
+    {
+      "model": "gpt",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 42,
+      "median_turns": 42,
+      "median_input_tokens": 68888,
+      "median_output_tokens": 5812,
+      "median_cost_usd": 0.2594,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.0909,
+      "median_tiles_explored": 22,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          23,
+          45,
+          42
+        ],
+        "cost_usd": [
+          0.16036,
+          0.30129,
+          0.2594
+        ],
+        "tiles_explored": [
+          18,
+          26,
+          22
+        ],
+        "idle_rate": [
+          0.0909,
+          0.0455,
+          0.2683
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "haiku",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 300,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_tokens": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 116,
+      "median_input_tokens": 380148,
+      "median_output_tokens": 21676,
+      "median_cost_usd": 0.486947,
+      "median_stuck_index": 0.8621,
+      "median_invalid_rate": 0.4211,
+      "median_idle_rate": 0.9474,
+      "median_tiles_explored": 5,
+      "median_no_tool_call_rate": 0.4211,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 102,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          115,
+          133,
+          116
+        ],
+        "cost_usd": [
+          0.489233,
+          0.472858,
+          0.486947
+        ],
+        "tiles_explored": [
+          5,
+          2,
+          7
+        ],
+        "idle_rate": [
+          0.9474,
+          0.9924,
+          0.8783
+        ],
+        "no_tool_call_rate": [
+          0.4783,
+          0.4211,
+          0.3621
+        ],
+        "turns_since_new_tile": [
+          102,
+          130,
+          4
+        ]
+      }
+    },
+    {
+      "model": "qwen-local",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 169283,
+      "median_output_tokens": 37978,
+      "median_cost_usd": 0.0,
+      "median_stuck_index": 0.23,
+      "median_invalid_rate": 0.05,
+      "median_idle_rate": 0.6364,
+      "median_tiles_explored": 21,
+      "median_no_tool_call_rate": 0.05,
+      "median_ceiling_hit_rate": 0.04,
+      "median_turns_since_new_tile": 4,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tiles_explored": [
+          21,
+          22,
+          21
+        ],
+        "idle_rate": [
+          0.5051,
+          0.6364,
+          0.6667
+        ],
+        "no_tool_call_rate": [
+          0.04,
+          0.09,
+          0.05
+        ],
+        "turns_since_new_tile": [
+          4,
+          1,
+          35
+        ]
+      }
+    },
+    {
+      "model": "sonnet",
+      "scenario": "s1_exit_pallet",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 326981,
+      "median_output_tokens": 18034,
+      "median_cost_usd": 1.251453,
+      "median_stuck_index": 0.96,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.9596,
+      "median_tiles_explored": 4,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 90,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          1.069503,
+          1.321272,
+          1.251453
+        ],
+        "tiles_explored": [
+          4,
+          18,
+          2
+        ],
+        "idle_rate": [
+          0.9596,
+          0.7374,
+          0.9798
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.16,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          90,
+          41,
+          96
+        ]
+      }
+    },
+    {
+      "model": "gemini",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 1,
+        "success": 2
+      },
+      "success_rate": 0.667,
+      "success_at_cap": true,
+      "median_steps_to_success": 77.0,
+      "median_turns": 91,
+      "median_input_tokens": 313447,
+      "median_output_tokens": 9035,
+      "median_cost_usd": 0.549521,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.1,
+      "median_idle_rate": 0.5455,
+      "median_tiles_explored": 36,
+      "median_no_tool_call_rate": 0.1,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 0,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          false
+        ],
+        "turns": [
+          63,
+          91,
+          100
+        ],
+        "cost_usd": [
+          0.454083,
+          0.549521,
+          0.648186
+        ],
+        "tiles_explored": [
+          39,
+          36,
+          35
+        ],
+        "idle_rate": [
+          0.371,
+          0.5778,
+          0.5455
+        ],
+        "no_tool_call_rate": [
+          0.0635,
+          0.1099,
+          0.1
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          0
+        ]
+      }
+    },
+    {
+      "model": "gemini-lite",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 253276,
+      "median_output_tokens": 3938,
+      "median_cost_usd": 0.069226,
+      "median_stuck_index": 0.06,
+      "median_invalid_rate": 0.09,
+      "median_idle_rate": 0.8384,
+      "median_tiles_explored": 10,
+      "median_no_tool_call_rate": 0.09,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 7,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.070537,
+          0.067028,
+          0.069226
+        ],
+        "tiles_explored": [
+          10,
+          16,
+          8
+        ],
+        "idle_rate": [
+          0.8384,
+          0.8182,
+          0.8586
+        ],
+        "no_tool_call_rate": [
+          0.09,
+          0.09,
+          0.07
+        ],
+        "turns_since_new_tile": [
+          15,
+          5,
+          7
+        ]
+      }
+    },
+    {
+      "model": "gpt",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 164996,
+      "median_output_tokens": 11878,
+      "median_cost_usd": 0.590656,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.5657,
+      "median_tiles_explored": 27,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 2,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.590656,
+          0.609936,
+          0.554773
+        ],
+        "tiles_explored": [
+          27,
+          21,
+          28
+        ],
+        "idle_rate": [
+          0.5657,
+          0.4545,
+          0.7071
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          7,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "model": "haiku",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 400,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_usd": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 128,
+      "median_input_tokens": 396589,
+      "median_output_tokens": 20861,
+      "median_cost_usd": 0.501602,
+      "median_stuck_index": 0.0938,
+      "median_invalid_rate": 0.2344,
+      "median_idle_rate": 0.965,
+      "median_tiles_explored": 5,
+      "median_no_tool_call_rate": 0.2344,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 28,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          128,
+          118,
+          144
+        ],
+        "cost_usd": [
+          0.500894,
+          0.504289,
+          0.501602
+        ],
+        "tiles_explored": [
+          12,
+          3,
+          5
+        ],
+        "idle_rate": [
+          0.8976,
+          0.9829,
+          0.965
+        ],
+        "no_tool_call_rate": [
+          0.2344,
+          0.0169,
+          0.2639
+        ],
+        "turns_since_new_tile": [
+          28,
+          75,
+          0
+        ]
+      }
+    },
+    {
+      "model": "qwen-local",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 169083,
+      "median_output_tokens": 36224,
+      "median_cost_usd": 0.0,
+      "median_stuck_index": 0.1,
+      "median_invalid_rate": 0.15,
+      "median_idle_rate": 0.8384,
+      "median_tiles_explored": 9,
+      "median_no_tool_call_rate": 0.05,
+      "median_ceiling_hit_rate": 0.04,
+      "median_turns_since_new_tile": 5,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tiles_explored": [
+          9,
+          14,
+          1
+        ],
+        "idle_rate": [
+          0.7475,
+          0.8384,
+          1.0
+        ],
+        "no_tool_call_rate": [
+          0.09,
+          0.05,
+          0.05
+        ],
+        "turns_since_new_tile": [
+          5,
+          9,
+          0
+        ]
+      }
+    },
+    {
+      "model": "sonnet",
+      "scenario": "s2_viridian_pokecenter",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 310667,
+      "median_output_tokens": 15678,
+      "median_cost_usd": 1.167171,
+      "median_stuck_index": 0.13,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.8889,
+      "median_tiles_explored": 9,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 9,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          1.167171,
+          1.225908,
+          1.161084
+        ],
+        "tiles_explored": [
+          9,
+          9,
+          14
+        ],
+        "idle_rate": [
+          0.8889,
+          0.9192,
+          0.8485
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          9,
+          9,
+          24
+        ]
+      }
+    },
+    {
+      "model": "gemini",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 323084,
+      "median_output_tokens": 8545,
+      "median_cost_usd": 0.556252,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.05,
+      "median_idle_rate": 0.7677,
+      "median_tiles_explored": 23,
+      "median_no_tool_call_rate": 0.05,
+      "median_ceiling_hit_rate": 0.01,
+      "median_turns_since_new_tile": 3,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.556252,
+          0.714236,
+          0.529846
+        ],
+        "tiles_explored": [
+          23,
+          41,
+          12
+        ],
+        "idle_rate": [
+          0.7677,
+          0.4646,
+          0.8889
+        ],
+        "no_tool_call_rate": [
+          0.05,
+          0.03,
+          0.13
+        ],
+        "turns_since_new_tile": [
+          3,
+          1,
+          5
+        ]
+      }
+    },
+    {
+      "model": "gemini-lite",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 241592,
+      "median_output_tokens": 3091,
+      "median_cost_usd": 0.065041,
+      "median_stuck_index": 0.61,
+      "median_invalid_rate": 0.03,
+      "median_idle_rate": 0.8485,
+      "median_tiles_explored": 6,
+      "median_no_tool_call_rate": 0.03,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 28,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.064696,
+          0.065041,
+          0.068259
+        ],
+        "tiles_explored": [
+          5,
+          14,
+          6
+        ],
+        "idle_rate": [
+          0.8788,
+          0.8485,
+          0.7475
+        ],
+        "no_tool_call_rate": [
+          0.03,
+          0.04,
+          0.03
+        ],
+        "turns_since_new_tile": [
+          71,
+          28,
+          11
+        ]
+      }
+    },
+    {
+      "model": "gpt",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 164486,
+      "median_output_tokens": 13970,
+      "median_cost_usd": 0.622188,
+      "median_stuck_index": 0.19,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.6465,
+      "median_tiles_explored": 18,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 2,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.606735,
+          0.626674,
+          0.622188
+        ],
+        "tiles_explored": [
+          16,
+          18,
+          31
+        ],
+        "idle_rate": [
+          0.7273,
+          0.6465,
+          0.5758
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          2,
+          5,
+          0
+        ]
+      }
+    },
+    {
+      "model": "haiku",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 600,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_usd": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 223,
+      "median_input_tokens": 776396,
+      "median_output_tokens": 45566,
+      "median_cost_usd": 1.00276,
+      "median_stuck_index": 0.9147,
+      "median_invalid_rate": 0.4787,
+      "median_idle_rate": 1.0,
+      "median_tiles_explored": 1,
+      "median_no_tool_call_rate": 0.4787,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 210,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          211,
+          223,
+          255
+        ],
+        "cost_usd": [
+          1.00276,
+          1.004226,
+          1.002536
+        ],
+        "tiles_explored": [
+          1,
+          26,
+          1
+        ],
+        "idle_rate": [
+          1.0,
+          0.8514,
+          1.0
+        ],
+        "no_tool_call_rate": [
+          0.4787,
+          0.3408,
+          0.4824
+        ],
+        "turns_since_new_tile": [
+          210,
+          123,
+          254
+        ]
+      }
+    },
+    {
+      "model": "qwen-local",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 169064,
+      "median_output_tokens": 33440,
+      "median_cost_usd": 0.0,
+      "median_stuck_index": 0.19,
+      "median_invalid_rate": 0.03,
+      "median_idle_rate": 0.6869,
+      "median_tiles_explored": 18,
+      "median_no_tool_call_rate": 0.02,
+      "median_ceiling_hit_rate": 0.02,
+      "median_turns_since_new_tile": 29,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tiles_explored": [
+          18,
+          15,
+          18
+        ],
+        "idle_rate": [
+          0.697,
+          0.6869,
+          0.5051
+        ],
+        "no_tool_call_rate": [
+          0.04,
+          0.01,
+          0.02
+        ],
+        "turns_since_new_tile": [
+          16,
+          29,
+          29
+        ]
+      }
+    },
+    {
+      "model": "sonnet",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": null,
+      "reasoning_provenance": "off_unrecorded",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 360955,
+      "median_output_tokens": 21656,
+      "median_cost_usd": 1.407705,
+      "median_stuck_index": 0.35,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.6869,
+      "median_tiles_explored": 14,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": 17,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          1.407705,
+          1.387581,
+          1.445688
+        ],
+        "tiles_explored": [
+          8,
+          14,
+          21
+        ],
+        "idle_rate": [
+          0.7576,
+          0.6869,
+          0.6162
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          36,
+          1,
+          17
+        ]
+      }
+    },
+    {
+      "model": "gemini",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 9,
+      "median_turns": 9,
+      "median_input_tokens": 21894,
+      "median_output_tokens": 408,
+      "median_cost_usd": 0.036513,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.8,
+      "median_tiles_explored": 2,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          9,
+          21,
+          6
+        ],
+        "cost_usd": [
+          0.036513,
+          0.115247,
+          0.021243
+        ],
+        "tiles_explored": [
+          1,
+          5,
+          2
+        ],
+        "idle_rate": [
+          1.0,
+          0.75,
+          0.8
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0476,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "gemini-lite",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 7,
+      "median_turns": 7,
+      "median_input_tokens": 14008,
+      "median_output_tokens": 221,
+      "median_cost_usd": 0.003833,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.6667,
+      "median_tiles_explored": 3,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          7,
+          7,
+          17
+        ],
+        "cost_usd": [
+          0.003775,
+          0.003833,
+          0.009689
+        ],
+        "tiles_explored": [
+          3,
+          4,
+          2
+        ],
+        "idle_rate": [
+          0.6667,
+          0.5,
+          0.9375
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.1765
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "gpt",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 1,
+      "exclusions": [
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 45,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        }
+      ],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 6,
+      "median_turns": 6,
+      "median_input_tokens": 6920,
+      "median_output_tokens": 589,
+      "median_cost_usd": 0.026125,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 1.0,
+      "median_tiles_explored": 1,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          6,
+          7,
+          6
+        ],
+        "cost_usd": [
+          0.026125,
+          0.030377,
+          0.026016
+        ],
+        "tiles_explored": [
+          1,
+          1,
+          1
+        ],
+        "idle_rate": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "qwen-local",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 168794,
+      "median_output_tokens": 38187,
+      "median_cost_usd": 0.0,
+      "median_stuck_index": 0.21,
+      "median_invalid_rate": 0.09,
+      "median_idle_rate": 0.7677,
+      "median_tiles_explored": 11,
+      "median_no_tool_call_rate": 0.09,
+      "median_ceiling_hit_rate": 0.08,
+      "median_turns_since_new_tile": 54,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tiles_explored": [
+          11,
+          8,
+          11
+        ],
+        "idle_rate": [
+          0.6667,
+          0.798,
+          0.7677
+        ],
+        "no_tool_call_rate": [
+          0.09,
+          0.07,
+          0.09
+        ],
+        "turns_since_new_tile": [
+          73,
+          54,
+          20
+        ]
+      }
+    },
+    {
+      "model": "sonnet",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 9,
+      "exclusions": [
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 26,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 26,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 25,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_tokens' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_tokens",
+          "turns": 78,
+          "evidence": {
+            "stop_reason": "max_tokens",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_tokens' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_tokens",
+          "turns": 72,
+          "evidence": {
+            "stop_reason": "max_tokens",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 38,
+          "evidence": {
+            "turns": 38
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        }
+      ],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "recorded_off",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 11,
+      "median_turns": 11,
+      "median_input_tokens": 22540,
+      "median_output_tokens": 1070,
+      "median_cost_usd": 0.08367,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.9,
+      "median_tiles_explored": 2,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          11,
+          10,
+          11
+        ],
+        "cost_usd": [
+          0.085032,
+          0.075981,
+          0.08367
+        ],
+        "tiles_explored": [
+          2,
+          2,
+          2
+        ],
+        "idle_rate": [
+          0.9,
+          0.8889,
+          0.9
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  ]
+}

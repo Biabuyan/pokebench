@@ -1,0 +1,434 @@
+{
+  "schema": 5,
+  "generated": "2026-08-16T01:38:07",
+  "rows": [
+    {
+      "model": "gemini",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 9,
+      "median_turns": 9,
+      "median_input_tokens": 21894,
+      "median_output_tokens": 408,
+      "median_cost_usd": 0.036513,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.8,
+      "median_tiles_explored": 2,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          9,
+          21,
+          6
+        ],
+        "cost_usd": [
+          0.036513,
+          0.115247,
+          0.021243
+        ],
+        "tiles_explored": [
+          1,
+          5,
+          2
+        ],
+        "idle_rate": [
+          1.0,
+          0.75,
+          0.8
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0476,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "gemini-lite",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 7,
+      "median_turns": 7,
+      "median_input_tokens": 14008,
+      "median_output_tokens": 221,
+      "median_cost_usd": 0.003833,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.6667,
+      "median_tiles_explored": 3,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          7,
+          7,
+          17
+        ],
+        "cost_usd": [
+          0.003775,
+          0.003833,
+          0.009689
+        ],
+        "tiles_explored": [
+          3,
+          4,
+          2
+        ],
+        "idle_rate": [
+          0.6667,
+          0.5,
+          0.9375
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.1765
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "gpt",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 1,
+      "exclusions": [
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 45,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        }
+      ],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 6,
+      "median_turns": 6,
+      "median_input_tokens": 6920,
+      "median_output_tokens": 589,
+      "median_cost_usd": 0.026125,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 1.0,
+      "median_tiles_explored": 1,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          6,
+          7,
+          6
+        ],
+        "cost_usd": [
+          0.026125,
+          0.030377,
+          0.026016
+        ],
+        "tiles_explored": [
+          1,
+          1,
+          1
+        ],
+        "idle_rate": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "model": "qwen-local",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 100,
+      "reasoning": true,
+      "reasoning_provenance": "not_applicable",
+      "stop_reasons": {
+        "max_turns": 3
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 100,
+      "median_input_tokens": 168794,
+      "median_output_tokens": 38187,
+      "median_cost_usd": 0.0,
+      "median_stuck_index": 0.21,
+      "median_invalid_rate": 0.09,
+      "median_idle_rate": 0.7677,
+      "median_tiles_explored": 11,
+      "median_no_tool_call_rate": 0.09,
+      "median_ceiling_hit_rate": 0.08,
+      "median_turns_since_new_tile": 54,
+      "seed_values": {
+        "success": [
+          false,
+          false,
+          false
+        ],
+        "turns": [
+          100,
+          100,
+          100
+        ],
+        "cost_usd": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "tiles_explored": [
+          11,
+          8,
+          11
+        ],
+        "idle_rate": [
+          0.6667,
+          0.798,
+          0.7677
+        ],
+        "no_tool_call_rate": [
+          0.09,
+          0.07,
+          0.09
+        ],
+        "turns_since_new_tile": [
+          73,
+          54,
+          20
+        ]
+      }
+    },
+    {
+      "model": "sonnet",
+      "scenario": "s4_viridian_mart",
+      "tier": 0,
+      "seeds": 3,
+      "seeds_valid": 3,
+      "seeds_excluded": 9,
+      "exclusions": [
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 26,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 26,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_usd' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_usd",
+          "turns": 25,
+          "evidence": {
+            "stop_reason": "max_usd",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_tokens' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_tokens",
+          "turns": 78,
+          "evidence": {
+            "stop_reason": "max_tokens",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "cap_mismatch",
+          "detail": "stopped on 'max_tokens' during a turn-matched sweep \u2014 the row would carry fewer turns for a budget/hardware reason, not a capability one",
+          "stop_reason": "max_tokens",
+          "turns": 72,
+          "evidence": {
+            "stop_reason": "max_tokens",
+            "cap_turns": 100
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 38,
+          "evidence": {
+            "turns": 38
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        },
+        {
+          "reason": "incomplete",
+          "detail": "no summary.json \u2014 the run never finished (this is the tell that exposed the 429 sweep incident)",
+          "stop_reason": "?",
+          "turns": 0,
+          "evidence": {
+            "turns": 0
+          }
+        }
+      ],
+      "cap_turns": 100,
+      "reasoning": false,
+      "reasoning_provenance": "recorded_off",
+      "stop_reasons": {
+        "success": 3
+      },
+      "success_rate": 1.0,
+      "success_at_cap": true,
+      "median_steps_to_success": 11,
+      "median_turns": 11,
+      "median_input_tokens": 22540,
+      "median_output_tokens": 1070,
+      "median_cost_usd": 0.08367,
+      "median_stuck_index": 0.0,
+      "median_invalid_rate": 0.0,
+      "median_idle_rate": 0.9,
+      "median_tiles_explored": 2,
+      "median_no_tool_call_rate": 0.0,
+      "median_ceiling_hit_rate": 0.0,
+      "median_turns_since_new_tile": null,
+      "seed_values": {
+        "success": [
+          true,
+          true,
+          true
+        ],
+        "turns": [
+          11,
+          10,
+          11
+        ],
+        "cost_usd": [
+          0.085032,
+          0.075981,
+          0.08367
+        ],
+        "tiles_explored": [
+          2,
+          2,
+          2
+        ],
+        "idle_rate": [
+          0.9,
+          0.8889,
+          0.9
+        ],
+        "no_tool_call_rate": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "turns_since_new_tile": [
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  ]
+}

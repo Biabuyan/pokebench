@@ -1,0 +1,65 @@
+# S2 — Route 1 → Viridian City Pokécenter (multi-screen navigation + healing)
+#
+# Anchor recorded 2026-07-19 (`states/s2_route1.state`): standing on Route 1
+# just north of the Pallet exit, post-starter. Re-record on a fresh machine with
+# `pokebench play --capture ROUTE_1 --out scenarios/states/s2_route1.state`.
+# Mirror any geometry a real run reveals into tests/fake_world.py, as with S1.
+
+id: s2_viridian_pokecenter
+name: "S2 — Route 1 → Viridian Pokécenter"
+
+anchor:
+  state_file: states/s2_route1.state # local-only, never committed (see header)
+  requirements:
+    map: ROUTE_1
+    min_party_count: 1
+
+objective: >
+  You are on Route 1, north of Pallet Town. Travel north through Route 1 into
+  Viridian City, then enter the Pokémon Center (the building with the red roof)
+  to reach the healing counter. Entering the Pokémon Center completes the task.
+
+success:
+  map: VIRIDIAN_POKECENTER # RAM-checkable: wCurMap == 0x29
+  # Stricter option once healing matters: also require full party HP.
+
+caps:
+  agent_turns: 400
+  wall_clock_minutes: 30
+  max_tokens: 600000
+  max_usd: 0.50
+
+# M0-style scripted oracle (Task C, 2026-08-11) — proves the scenario is
+# winnable and its success predicate fires, mirroring S1's `spike_route:`.
+# Discovered live against the real ROM with `tools/probe_s2_route.py bfs`
+# (two map-scoped BFS phases: ROUTE_1 -> VIRIDIAN_CITY, then VIRIDIAN_CITY ->
+# VIRIDIAN_POKECENTER — see that script's docstring for why a single
+# unconstrained BFS across both maps is the wrong tool here). "steps" (not
+# "greedy"/"legs") because this is one exact BFS-shortest path through a
+# multi-screen route with turns, not a wall-hugging or single-axis leg — see
+# `run_route`'s "steps" strategy docstring in harness/navigate.py.
+#
+# Confirmed end-to-end via `pokebench spike-s1 --scenario
+# scenarios/s2_viridian_pokecenter.yaml` (PASS, run twice), landing at
+# VIRIDIAN_POKECENTER's own interior coordinate (3,7) — NOT the exterior
+# door tile (23,25); see `tests/fake_world.py::build_route1_to_pokecenter_
+# world()`'s docstring for why a same-frame read across the warp reports the
+# wrong one. Route 1 DOES cross wild-encounter grass: the first live
+# `spike-s1` attempt against this route failed outright, because
+# `cmd_spike_s1` had never needed a real RUN macro before S1 (indoors/town
+# only) and used a `tap("a")` placeholder. Fixed by wiring
+# `navigate.WildRunEscaper` into `cmd_spike_s1` (see cli.py) — both
+# verification PASSES after that fix escaped at least one wild encounter
+# mid-route (trace.jsonl shows two on one run, zero on the other; encounters
+# are RNG, not deterministic per tile).
+spike_route:
+  - phase: ROUTE_1
+    strategy: steps
+    steps: [up, up, up, up, up, up, up, left, left, up, up, up, up, right, right,
+            right, right, up, up, up, up, left, left, left, up, up, up, up, up, up,
+            right, right, right, right, right, up, up, up, up, up, up, up, up, up,
+            up, up, up, left, left, left, up, up, up]
+  - phase: VIRIDIAN_CITY
+    strategy: steps
+    steps: [up, up, up, up, up, left, up, up, left, up, up, right, right, right,
+            right, up]

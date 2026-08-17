@@ -1,0 +1,4 @@
+# Egress allowlist (extended/regex, default-deny). Only these hosts are
+# reachable from the sandboxed agent. Add a line per host if you later target
+# a different provider endpoint (e.g. Bedrock/Vertex); keep it minimal.
+^api\.anthropic\.com$

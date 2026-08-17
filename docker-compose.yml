@@ -1,0 +1,44 @@
+# PokéBench sandbox (SECURITY.md: emulator + agent with no network egress
+# except an allowlisted LLM-API proxy).
+#
+#   agent  -- attached ONLY to the internal `sandbox` network -> no direct
+#             internet. Its only outbound path is HTTPS_PROXY -> proxy.
+#   proxy  -- on both networks; bridges the agent to the internet but permits
+#             HTTPS only to the hosts in docker/proxy/filter (Anthropic API).
+#
+# The ROM and save state are mounted read-only; the API key comes from your
+# shell env. No default command runs, so starting a container never spends
+# API budget by surprise — you invoke a subcommand explicitly:
+#   docker compose run --rm agent run --model haiku --tier 0
+#   docker compose run --rm agent replay
+# See docker/README.md.
+
+services:
+  proxy:
+    build: ./docker/proxy
+    networks:
+      - sandbox   # reachable by the agent
+      - egress    # the proxy's own route to the internet
+    restart: unless-stopped
+
+  agent:
+    build: .
+    depends_on:
+      - proxy
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?set ANTHROPIC_API_KEY in your shell}
+      HTTPS_PROXY: http://proxy:8888
+      HTTP_PROXY: http://proxy:8888
+      NO_PROXY: ""
+    volumes:
+      - ./roms:/app/roms:ro
+      - ./scenarios/states:/app/scenarios/states:ro
+      - ./runs:/app/runs
+    networks:
+      - sandbox   # ONLY the internal network -> no direct internet egress
+
+networks:
+  sandbox:
+    internal: true   # no gateway to the outside world
+  egress:
+    driver: bridge   # normal outbound; only the proxy is attached

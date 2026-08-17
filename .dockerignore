@@ -1,0 +1,25 @@
+# Never bake these into the image.
+# Copyrighted / private / user data (mounted read-only at runtime instead):
+roms/
+scenarios/states/
+*.state
+# Run artifacts + local caches:
+runs/
+.venv/
+.pytest_cache/
+.ruff_cache/
+**/__pycache__/
+*.pyc
+# Repo plumbing not needed to run the harness:
+.git/
+.github/
+.pre-commit-config.yaml
+tests/
+blog/
+web/
+# Docs (keep README.md — pyproject references it for the build). This also
+# keeps PLAN.md's private notes out of any built image. `*.md` is root-only in
+# Docker, so the packaged prompt below is safe — the negation makes it explicit.
+*.md
+!README.md
+!src/pokebench/harness/prompts/system.md

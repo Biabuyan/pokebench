@@ -1,0 +1,61 @@
+# ROMs are never committed (see roms/README.md)
+roms/*
+!roms/README.md
+*.gb
+*.gbc
+*.sav
+
+# Save states are recorded locally (see scenarios/states/README.md)
+scenarios/states/*
+!scenarios/states/README.md
+
+# Run artifacts (traces, screenshots)
+runs/
+
+# M4 static site: generated from results.json + results_traces.txt by
+# `pokebench site build`, not source. Mirrors runs/ gitignored vs results.json
+# committed -- rebuild locally, do not commit the output.
+web/dist/
+
+# tools/ one-off research probes are kept (see tools/README.md), but the debug
+# output they generate on a given machine/run is not: screenshots, scratch
+# JSON dumps, and any discovered-route JSON are local, regenerable artifacts,
+# not the durable record (that's HANDOFF.md + tests/fake_world.py + the
+# scenario YAML). Also matches the `_debug_edges.json` incident (2026-08-06):
+# an unauthored, unverified debug dump left on disk, inherited from a
+# terminated session, was mistaken for evidence by the next session and later
+# found -- on live re-verification -- to contain at least one wrong entry.
+# Full account in tools/README.md, which is tracked and public.
+tools/_probe_screens/
+tools/_*.json
+tools/*_probe_result.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+.env.*
+
+# Agent tooling and internal working notes — deliberately not part of the public
+# artifact. HANDOFF.md is the cold-start state doc (costs, budget, environment
+# specifics, unpolished findings); .claude/ holds the repo's subagent definitions
+# and skill wrappers; CLAUDE.md is the assistant's orientation doc.
+# NOTE: HANDOFF.md was tracked up to 2026-08-04 and CLAUDE.md up to 2026-08-06;
+# both REMAIN IN GIT HISTORY — these entries stop future changes being published,
+# they do not remove the past ones. Keep writing to both; they are still the
+# source of truth locally. A fresh clone now gets neither — README.md is the only
+# orientation a new reader has.
+.claude/
+HANDOFF.md
+CLAUDE.md
+
+.vercel
+.env*

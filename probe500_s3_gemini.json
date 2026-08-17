@@ -1,0 +1,53 @@
+{
+  "schema": 3,
+  "generated": "2026-08-04T18:24:13",
+  "rows": [
+    {
+      "model": "gemini",
+      "scenario": "s3_viridian_forest",
+      "tier": 0,
+      "seeds": 1,
+      "seeds_valid": 1,
+      "seeds_excluded": 0,
+      "exclusions": [],
+      "cap_turns": 500,
+      "reasoning": true,
+      "stop_reasons": {
+        "max_turns": 1
+      },
+      "success_rate": 0.0,
+      "success_at_cap": false,
+      "median_steps_to_success": null,
+      "median_turns": 500,
+      "median_input_tokens": 1688420,
+      "median_output_tokens": 41862,
+      "median_cost_usd": 2.909384,
+      "median_stuck_index": 0.02,
+      "median_invalid_rate": 0.108,
+      "median_idle_rate": 0.511,
+      "median_tiles_explored": 214,
+      "median_no_tool_call_rate": 0.108,
+      "median_ceiling_hit_rate": 0.0,
+      "seed_values": {
+        "success": [
+          false
+        ],
+        "turns": [
+          500
+        ],
+        "cost_usd": [
+          2.909384
+        ],
+        "tiles_explored": [
+          214
+        ],
+        "idle_rate": [
+          0.511
+        ],
+        "no_tool_call_rate": [
+          0.108
+        ]
+      }
+    }
+  ]
+}
