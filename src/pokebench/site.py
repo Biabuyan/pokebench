@@ -70,6 +70,16 @@ CEILING_PROBE_NOTE = (
 # either falsely flag gpt/gemini rows or silently hide the one row that IS a caveat.
 REASONING_OFF_NOTE = "reasoning OFF — not a like-for-like comparison"
 
+# BOTH provenances mean "reasoning was off"; they differ only in how well the trace
+# evidences it (`recorded_off` recorded the flag, `off_unrecorded` infers it from a
+# provably-bound flag). Keying the marker on `off_unrecorded` alone inverted the
+# disclosure on the live leaderboard (found 2026-08-17): sonnet's S1-S3 rows carried
+# the caveat and its S4 row -- the one scenario it won, and the row with the STRONGER
+# provenance -- did not, which reads as "the win was the like-for-like one." Excludes
+# `not_applicable` (vendor ignores the flag, so its absence says nothing) and
+# `recorded_on`/`unknown`.
+_REASONING_OFF_PROVENANCES = frozenset({"off_unrecorded", "recorded_off"})
+
 # The public repo -- linked from the collapsed provenance sections instead of inlining
 # results_traces.txt's full text (see CLAUDE.md's 2026-08-16 site.py restructure: a
 # raw file dump above the table pushed the leaderboard itself off the first screen).
@@ -268,7 +278,7 @@ def _model_cell(row: dict) -> str:
     never as running prose inside the cell itself.
     """
     model = _esc(row.get("model", "?"))
-    if row.get("reasoning_provenance") == "off_unrecorded":
+    if row.get("reasoning_provenance") in _REASONING_OFF_PROVENANCES:
         return (
             f'{model} <span class="caveat-marker reasoning-off" '
             f'title="{_esc(REASONING_OFF_NOTE)}">reasoning off</span>'

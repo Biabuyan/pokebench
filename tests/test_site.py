@@ -152,6 +152,20 @@ def test_reasoning_off_unrecorded_gets_a_visible_marker_gpt_not_applicable_does_
     assert "reasoning OFF" not in gpt_html
 
 
+def test_recorded_off_also_gets_the_marker_not_only_off_unrecorded():
+    """`recorded_off` means reasoning was off AND the trace recorded it -- strictly
+    better evidence than `off_unrecorded`, which infers it. Flagging only the latter
+    inverted the disclosure on the live leaderboard (found 2026-08-17): sonnet's
+    S1-S3 rows (`off_unrecorded`, 0/3 each) carried the marker while its S4 row
+    (`recorded_off`, 3/3) did not -- so the one scenario sonnet WON was the only one
+    that looked like a like-for-like comparison, inviting the reader to conclude
+    reasoning is what won it. Both provenances mean the same caveat applies."""
+    row = _row(scenario="s4_viridian_mart", model="sonnet", reasoning_provenance="recorded_off")
+    html_out = render_index(_doc(row))
+    assert "reasoning OFF" in html_out
+    assert "not a like-for-like comparison" in html_out
+
+
 def test_reasoning_off_marker_is_compact_a_marker_not_a_sentence_in_the_cell():
     """The full caveat sentence used to BE the MODEL cell's text -- six lines of
     wrapped prose that set every row's height, including the ~20 rows with no

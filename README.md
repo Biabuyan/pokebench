@@ -9,13 +9,21 @@ system prompt, same observation format, measured on short save-state-anchored sc
 with RAM-checkable success predicates.
 
 > Status: **M0–M4 complete.** Five models from four vendors have run the same tier-0 harness,
-> turn-matched at 100 turns, three seeds per scenario — 45 seeds, results in `results.json`.
+> turn-matched at 100 turns, three seeds per scenario — 45 seeds across S1–S3, plus a fourth
+> scenario (S4, a Poké Mart purchase) adding 15 more. All in `results.json`.
 > **Leaderboard is live: https://pokebench-snowy.vercel.app**
 >
-> **`gemini-3.5-flash` is the only model that solved more than one scenario** (5/9; S1 in a
-> median 28 turns for $0.17). `gpt-5.6-terra` solved S1 3/3 and nothing else. **Nobody solved
-> Viridian Forest — 0/15.** Every failing seed ran out of budget rather than failing the
-> objective.
+> **Across S1–S3, `gemini-3.5-flash` is the only model that solves more than one scenario**
+> (5/9; S1 in a median 28 turns for $0.17), with `gpt-5.6-terra` 3/3 on S1 and nothing else.
+> S4 changes that picture: gpt, gemini, gemini-lite and sonnet all go **3/3** there, so gpt
+> solves two scenarios overall and `gemini-3.1-flash-lite` goes from 0/9 to 3/3 — for a median
+> $0.004, an order of magnitude under gemini's cheapest win. Only the local `qwen3.5:4b` fails
+> it, 0/3. **Nobody solved Viridian Forest — 0/15** (read that as a ceiling probe, not a
+> ranking: no scripted oracle exists for it and its winnability under the current anchor is
+> unverified). Every failing seed ran out of turns rather than failing the objective — but that
+> is not the same as "still trying": sonnet's worst seeds were **frozen** (90+ turns since new
+> ground), most others were still finding new tiles at the cap, and granting 5× the turns did
+> not convert to a single extra win.
 >
 > The result that makes the case for the benchmark: **`claude-sonnet-4-6` scored 0/9 and
 > explored 4 tiles on S1 — where `qwen3.5:4b`, running free on a laptop CPU, explored 21.**
@@ -23,7 +31,8 @@ with RAM-checkable success predicates.
 >
 > Two caveats, stated up front. **One:** the harness's shared 1024-token output ceiling
 > truncated Anthropic's adaptive thinking on 39% of turns, so the sonnet row is its
-> reasoning-**off** leg and is the only row without deliberation. A shared constant turned out
+> reasoning-**off** leg — the only row measured with its vendor's deliberation mode
+> deliberately switched off. A shared constant turned out
 > not to be a neutral one — which is exactly the kind of harness effect this project exists to
 > surface. **Two:** the headline figures are medians over 3 seeds, and sonnet's S1 seeds are
 > 4/18/2 tiles — the median is honest but the distribution is bimodal, so `results.json`
@@ -39,9 +48,9 @@ with RAM-checkable success predicates.
 > rejected seeds are recorded in `results.json` with their reason rather than dropped.
 > Metrics, the N-seed runner, the matrix driver, the `score`/`sweep`/`bench`/`replay` tools,
 > and the static leaderboard generator are all unit-tested without a ROM or API key
-> (232 tests). Next: M5, the write-up.
+> (276 tests). Next: M5 — the write-up is drafted in `blog/`; publishing and socialising remain.
 >
-> **A follow-up probe (2 seeds, 500 turns instead of 100, informal — not part of the 45-seed
+> **A follow-up probe (2 seeds, 500 turns instead of 100, informal — not part of the scored
 > table above) qualifies "nobody solved Viridian Forest, ran out of budget."** At 5× the turn
 > budget, `gpt-5.6-terra` explored *fewer* tiles than on its own 100-turn seeds — it locked
 > onto one dead-end tile for 41% of the run. `gemini-3.5-flash` covered more ground but never
