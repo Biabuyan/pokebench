@@ -3,8 +3,9 @@
 Anchor save states are recorded locally with `uv run pokebench play` and are
 **not tracked by git** — they are derived from your own ROM/playthrough, and
 everything in this directory except this README is git-ignored (`.gitignore`
-has the pattern). The original plan (`PLAN.md`) considered shipping save-state
-*deltas*; the decision actually made was simpler and is what's implemented:
+has the pattern). An early draft of the build plan considered shipping
+save-state *deltas*; the decision actually made was simpler and is what's
+implemented:
 ship nothing derived from the ROM, and reproduce each anchor locally with
 `pokebench play` instead — the same "bring your own ROM" stance the repo
 takes everywhere else.

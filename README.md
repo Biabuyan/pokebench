@@ -151,7 +151,6 @@ uv run pytest                        # 232 unit tests, no ROM needed
 | `src/pokebench/replay.py` | Offline trace inspector (`pokebench replay`) |
 | `scenarios/` | Scenario specs (YAML) + locally-recorded anchor save states (S1–S3) |
 | `Dockerfile`, `docker/` | Optional sandbox — egress control (allowlist proxy, no direct egress) is **built and verified (2026-08-11)**; still **opt-in**, and no agent run has ever used it |
-| `PLAN.md` | The full build plan |
 | `web/` | Static leaderboard + trace viewer (`pokebench site build`, stdlib-only) — generated output is not committed; the built site is deployed at https://pokebench-snowy.vercel.app |
 | `blog/` | (M5) the write-up |
 | `SECURITY.md` | Controls mapped to OWASP Top 10:2025 / LLM Top 10 |

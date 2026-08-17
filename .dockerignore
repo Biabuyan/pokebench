@@ -17,9 +17,9 @@ runs/
 tests/
 blog/
 web/
-# Docs (keep README.md — pyproject references it for the build). This also
-# keeps PLAN.md's private notes out of any built image. `*.md` is root-only in
-# Docker, so the packaged prompt below is safe — the negation makes it explicit.
+# Docs (keep README.md — pyproject references it for the build). `*.md` is
+# root-only in Docker, so the packaged prompt below is safe — the negation
+# makes it explicit.
 *.md
 !README.md
 !src/pokebench/harness/prompts/system.md
