@@ -17,6 +17,7 @@ from PIL import Image
 
 from pokebench.cli import main
 from pokebench.site import (
+    _summary_line,
     build_site,
     parse_traces_commentary,
     render_index,
@@ -356,7 +357,10 @@ def test_masthead_shows_a_one_line_summary_derived_from_rows():
         _row(model="sonnet", scenario="s2_viridian_pokecenter", seeds_valid=3),
     )
     html_out = render_index(doc)
-    assert "2 models" in html_out
+    # "turn-matched" rather than a bare "2 models": both `_row`s carry cap_turns=100,
+    # so both are in the comparison set. See `_summary_line`'s docstring for why the
+    # headline count is split by cap at all.
+    assert "2 turn-matched models" in html_out
     assert "2 scenarios" in html_out
     assert "6 valid seed-run" in html_out
 
@@ -817,3 +821,51 @@ def test_web_dist_is_gitignored():
     gitignore = Path(__file__).resolve().parents[1] / ".gitignore"
     text = gitignore.read_text(encoding="utf-8")
     assert "web/dist" in text
+
+
+# --- summary line: the model count is split by cap_turns ----------------------------
+# A bare distinct-model count reads "6" while every comparative claim reads "5", because
+# haiku's rows are the earlier fixed-turn-budget milestone. The split is what stops a
+# reader who checks the leaderboard against the README from finding a contradiction.
+
+
+def _rows_for_summary() -> list[dict]:
+    """Four turn-matched models at cap 100 plus one off-cap baseline, shaped like
+    `results.json` rows but carrying only the fields `_summary_line` reads."""
+    rows = [
+        {"model": m, "scenario": s, "cap_turns": 100, "seeds_valid": 3}
+        for m in ("gemini", "gpt", "sonnet", "qwen-local")
+        for s in ("s1", "s2")
+    ]
+    rows += [
+        {"model": "haiku", "scenario": s, "cap_turns": cap, "seeds_valid": 3}
+        for s, cap in (("s1", 300), ("s2", 400))
+    ]
+    return rows
+
+
+def test_summary_line_counts_only_turn_matched_models_in_the_headline():
+    line = _summary_line(_rows_for_summary())
+    assert "4 turn-matched models × 2 scenarios" in line
+    assert "5 models" not in line  # the bare distinct-model count must not appear
+
+
+def test_summary_line_reports_the_off_cap_model_separately_not_silently_dropped():
+    line = _summary_line(_rows_for_summary())
+    assert "plus 1 baseline model on an earlier turn budget" in line
+    # every scored cell is still counted, baseline rows included
+    assert "10 scored cells from 30 valid seed-runs" in line
+
+
+def test_summary_line_omits_the_baseline_clause_when_every_row_shares_a_cap():
+    rows = [r for r in _rows_for_summary() if r["cap_turns"] == 100]
+    line = _summary_line(rows)
+    assert "4 turn-matched models × 2 scenarios" in line
+    assert "baseline" not in line
+
+
+def test_summary_line_falls_back_to_a_plain_count_when_no_row_carries_cap_turns():
+    rows = [{"model": "gemini", "scenario": "s1", "seeds_valid": 3}]
+    line = _summary_line(rows)
+    assert "1 model × 1 scenario" in line
+    assert "turn-matched" not in line

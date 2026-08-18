@@ -34,6 +34,7 @@ import html
 import json
 import re
 import shutil
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -527,16 +528,54 @@ def _summary_line(rows: list[dict]) -> str:
     many distinct models/scenarios appear and summing an existing per-row field is
     presentational, the same kind of text-shape counting `_count_excluded` already
     does in this module -- it is not `metrics/` work happening twice.
+
+    **The model count is split by `cap_turns` on purpose.** A bare count of distinct
+    models reads "6", while every comparative claim -- README, blog post, CV -- reads
+    "5", because `haiku`'s rows are the earlier fixed-turn-budget milestone
+    (`cap_turns` 300/400/600) and the head-to-head set is turn-matched at 100.
+    Reporting one number for both invites a reader who checks to conclude the project
+    contradicts itself, which is the opposite of what a leaderboard whose whole premise
+    is "the model is the only variable" can afford. The rule this encodes is stated in
+    `CLAUDE.md` ("Do not mix the haiku rows into the M3 table ... Filter on
+    `cap_turns`") and in `blog/the-harness-giveth.md` ("kept in the artifact and
+    excluded from the head-to-head table deliberately").
     """
     if not rows:
         return ""
     models = {r.get("model") for r in rows if r.get("model")}
     scenarios = {r.get("scenario") for r in rows if r.get("scenario")}
     valid_seeds = sum(r.get("seeds_valid") or 0 for r in rows)
+    # The model count is split by `cap_turns` deliberately -- see this function's
+    # docstring. Derived from the rows, never hardcoded: the comparison cap is
+    # whichever `cap_turns` the most rows share, and any model with no row at that
+    # cap is reported separately as a baseline rather than folded into the headline.
+    caps = Counter(r.get("cap_turns") for r in rows if r.get("cap_turns") is not None)
+    matched: set = set()
+    if caps:
+        main_cap = caps.most_common(1)[0][0]
+        matched = {
+            r.get("model")
+            for r in rows
+            if r.get("cap_turns") == main_cap and r.get("model")
+        }
+    off_cap = models - matched
+    if matched:
+        head = (
+            f"{len(matched)} turn-matched model{'s' if len(matched) != 1 else ''} × "
+            f"{len(scenarios)} scenario{'s' if len(scenarios) != 1 else ''}"
+        )
+    else:
+        head = (
+            f"{len(models)} model{'s' if len(models) != 1 else ''} × "
+            f"{len(scenarios)} scenario{'s' if len(scenarios) != 1 else ''}"
+        )
+    if off_cap:
+        head += (
+            f", plus {len(off_cap)} baseline model"
+            f"{'s' if len(off_cap) != 1 else ''} on an earlier turn budget"
+        )
     return (
-        f"{len(models)} model{'s' if len(models) != 1 else ''} × "
-        f"{len(scenarios)} scenario{'s' if len(scenarios) != 1 else ''}, "
-        f"{len(rows)} scored cell{'s' if len(rows) != 1 else ''} from "
+        f"{head}: {len(rows)} scored cell{'s' if len(rows) != 1 else ''} from "
         f"{valid_seeds} valid seed-run{'s' if valid_seeds != 1 else ''} — read the "
         "caveat beside any row that isn't a bare score."
     )
