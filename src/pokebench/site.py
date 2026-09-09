@@ -1347,3 +1347,119 @@ def build_site(
         missing_traces=missing,
         receipt_path=receipt_path,
     )
+
+
+# --- post-deploy verification -------------------------------------------------
+#
+# Exists because a deploy can succeed and still publish nothing. On 2026-08-18
+# `vercel --prod` was run from the repo root instead of `web/dist`; the repo-root
+# `.gitignore` line `web/dist/` made the CLI strip the only directory that held the
+# site, upload the source tree in its place, and report READY in 1s. The leaderboard
+# 404'd for 22 days. Neither the CLI's exit code nor its output could distinguish
+# that from a good deploy -- only reading the served bytes back can.
+
+# A path whose presence proves the deploy root was the REPO, not `web/dist`.
+# `pyproject.toml`/`uv.lock`/`src/...`/`results_traces.txt` are repo-root markers
+# `site build` never writes. `CLAUDE.md`/`HANDOFF.md`/`.env` are never-publish files
+# that `.gitignore` happens to shield today -- asserted anyway, because that shielding
+# is a side effect of the Vercel CLI's ignore handling, not something this repo
+# controls or can pin.
+MUST_NOT_PUBLISH = (
+    "pyproject.toml",
+    "uv.lock",
+    "src/pokebench/cli.py",
+    "results_traces.txt",
+    "CLAUDE.md",
+    "HANDOFF.md",
+    ".env",
+)
+
+
+@dataclass
+class VerifyReport:
+    url: str
+    ok: bool
+    failures: list[str] = field(default_factory=list)
+    checked_paths: int = 0
+
+
+def _default_fetch(url: str) -> tuple[int, bytes]:
+    """`(status, body)` for `url`. Stdlib only; the sole network call in this module.
+
+    Injected over in tests (`tests/test_site_verify.py`) the same way
+    `agents/_http.py`'s `JsonPoster` is, so the suite keeps its no-network rule.
+    """
+    import urllib.error
+    import urllib.request
+
+    req = urllib.request.Request(url, headers={"User-Agent": "pokebench-site-verify"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return resp.status, resp.read()
+    except urllib.error.HTTPError as exc:  # 404s are data here, not failures
+        return exc.code, exc.read()
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"could not reach {url}: {exc.reason}") from exc
+
+
+def verify_deployment(
+    url: str,
+    dist_dir: str | Path,
+    fetch=None,
+    max_links: int | None = None,
+) -> VerifyReport:
+    """Check that `url` is serving exactly the site built into `dist_dir`.
+
+    Asserts both halves of the 2026-08-18 outage: the site IS there (root 200 and
+    byte-identical to the local build, replay pages reachable), and the repo tree is
+    NOT (`MUST_NOT_PUBLISH` all absent). Byte comparison rather than status alone
+    because a stale deploy answers 200 and looks healthy.
+    """
+    fetch = fetch or _default_fetch
+    dist_dir = Path(dist_dir)
+    base = url.rstrip("/")
+    local_index = dist_dir / "index.html"
+    index_bytes = local_index.read_bytes()
+
+    failures: list[str] = []
+    checked = 0
+
+    def get(rel: str) -> tuple[int, bytes]:
+        nonlocal checked
+        checked += 1
+        return fetch(f"{base}/{rel}")
+
+    status, body = get("")
+    if status != 200:
+        failures.append(f"/ returned {status}, expected 200 -- the site is not being served")
+    elif body != index_bytes:
+        failures.append(
+            f"/ returned 200 but does not match {local_index} "
+            f"(served {len(body)} bytes, built {len(index_bytes)}) -- stale or wrong "
+            "directory deployed"
+        )
+
+    receipt_local = dist_dir / RECEIPT_FILE
+    if receipt_local.is_file():
+        status, body = get(RECEIPT_FILE)
+        if status != 200:
+            failures.append(f"/{RECEIPT_FILE} returned {status}, expected 200")
+        elif body != receipt_local.read_bytes():
+            failures.append(f"/{RECEIPT_FILE} does not match the local build")
+
+    for rel in MUST_NOT_PUBLISH:
+        status, _ = get(rel)
+        if status == 200:
+            failures.append(
+                f"/{rel} is publicly served -- the deploy root was the repo, not {dist_dir}"
+            )
+
+    links = sorted(set(re.findall(r'href="(runs/[^"]+)"', index_bytes.decode("utf-8"))))
+    if max_links is not None:
+        links = links[:max_links]
+    for rel in links:
+        status, _ = get(rel)
+        if status != 200:
+            failures.append(f"/{rel} returned {status} -- replay page missing from the deploy")
+
+    return VerifyReport(url=base, ok=not failures, failures=failures, checked_paths=checked)

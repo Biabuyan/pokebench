@@ -624,6 +624,45 @@ def cmd_site_build(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_site_verify(args: argparse.Namespace) -> int:
+    """Check a deployed URL serves exactly the site in `--dist`, and nothing else.
+
+    The one command here that IS allowed a network call (it has no other way to know
+    what a host is serving), and still needs no ROM or key. Run it immediately after
+    every `vercel --prod` -- a deploy from the wrong directory reports success and
+    publishes a 404, which is how the leaderboard stayed down for 22 days in Aug 2026.
+    Exits non-zero on any mismatch so it can be chained onto the deploy itself.
+    """
+    from pokebench.site import verify_deployment
+
+    index = Path(args.dist) / "index.html"
+    if not index.is_file():
+        print(
+            f"FAIL: {index} not found -- run `pokebench site build` first.",
+            file=sys.stderr,
+        )
+        return 2
+
+    try:
+        report = verify_deployment(args.url, args.dist, max_links=args.max_links)
+    except RuntimeError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
+
+    if not report.ok:
+        print(
+            f"FAIL: {report.url} does not match {args.dist} "
+            f"({len(report.failures)} problem(s), {report.checked_paths} path(s) checked):",
+            file=sys.stderr,
+        )
+        for problem in report.failures:
+            print(f"  - {problem}", file=sys.stderr)
+        return 1
+
+    print(f"OK: {report.url} matches {args.dist} ({report.checked_paths} path(s) checked)")
+    return 0
+
+
 def cmd_watch(args: argparse.Namespace) -> int:
     """Serve the live (or finished) run at `run_dir` for a browser to poll.
 
@@ -748,6 +787,20 @@ def main(argv: list[str] | None = None) -> int:
         "(optional; the leaderboard still builds without it)",
     )
     p2.set_defaults(func=cmd_site_build)
+
+    p3 = site_sub.add_parser(
+        "verify",
+        help="check a deployed URL is serving exactly what web/dist holds (needs network)",
+    )
+    p3.add_argument("--url", required=True, help="deployed base URL to check")
+    p3.add_argument("--dist", type=Path, default=Path("web/dist"))
+    p3.add_argument(
+        "--max-links",
+        type=int,
+        default=None,
+        help="check at most N replay pages (default: all of them)",
+    )
+    p3.set_defaults(func=cmd_site_verify)
 
     p = sub.add_parser("score", help="score run traces into metrics (no ROM/key)")
     p.add_argument("run_dirs", nargs="+", type=Path, help="run directories to score")

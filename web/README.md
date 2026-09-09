@@ -85,6 +85,8 @@ holding Vercel credentials, which does not exist. Rebuild and redeploy by hand w
 python -m uv run pokebench site build --results results.json --out web/dist
 cd web/dist
 vercel --prod --archive=tgz
+cd ../..
+python -m uv run pokebench site verify --url https://pokebench-snowy.vercel.app
 ```
 
 Every step here was learned the expensive way — do not simplify this back down:
@@ -94,11 +96,26 @@ Every step here was learned the expensive way — do not simplify this back down
    A git-connected Vercel project was tried first and cannot work at all: it failed with
    "No python entrypoint found" because Vercel auto-detected `pyproject.toml` and
    assumed a Python serverless app, not a static site.
-2. **`cd web/dist` before running `vercel`.** From the repo root, `vercel` uploads the
-   whole working directory — 211 MB, including `.venv` and `runs/`'s 8,040 files —
-   instead of the site's 218 files / 8.8 MB.
+2. **`cd web/dist` before running `vercel`.** This step has failed in two different
+   ways, and the second one is the dangerous one.
+   - *Loudly*, the first time: from the repo root with no `.gitignore` coverage,
+     `vercel` uploaded the whole working directory — 211 MB, including `.venv` and
+     `runs/`'s 8,040 files — instead of the site's ~315 files / 11 MB.
+   - *Silently*, on **2026-08-18**: the repo-root `.gitignore` now has `web/dist/`
+     (line 18), and the Vercel CLI applies the deploy root's `.gitignore`. So a
+     repo-root deploy strips the **one directory that holds the site**, uploads the
+     source tree in its place, and reports `● Ready` in 1s with no warning. The
+     leaderboard served a bare 404 for **22 days** before anyone noticed, while
+     `/pyproject.toml`, `/src/pokebench/cli.py`, `/uv.lock` and three untracked
+     working JSONs (`results_s4.json`, `calib_v2_n3.json`, `tier1_smoke.json`) were
+     publicly served in its place. Nothing leaked that `.gitignore` protects
+     (`CLAUDE.md`, `HANDOFF.md`, `.claude/`, `roms/`, `runs/`, `.env*` all 404'd), but
+     three files that are not part of the public artifact were live for three weeks.
+
+   Do not rely on reading the deploy output to catch this — it looks identical to a
+   good deploy. That is what step 5 is for.
 3. **`--archive=tgz` is load-bearing, not a style choice.** It sends one tarball instead
-   of 218 individual files. The repo-root attempts exhausted Vercel's free-tier daily
+   of ~315 individual files. The repo-root attempts exhausted Vercel's free-tier daily
    upload quota (`api-upload-free`, "more than 5000, try again in 1 day"), which
    surfaced only as opaque `Upload aborted` errors with no obvious connection to quota.
 4. **Answer "n" to "Pull development environment variables into .env.local?"**
@@ -107,6 +124,16 @@ Every step here was learned the expensive way — do not simplify this back down
    deleted before any successful deploy and was never committed (`.env*` is
    gitignored), so nothing leaked. A static site has no runtime and needs no env vars;
    the prompt should always be declined here.
+5. **Run `pokebench site verify` after every deploy — the deploy's own exit code does
+   not mean the site is up.** It fetches the served bytes back and asserts both halves
+   of the 2026-08-18 outage: `/` returns 200 *and is byte-identical* to the local
+   `index.html` (a stale deploy answers 200 and looks healthy), every replay page
+   resolves, and none of `MUST_NOT_PUBLISH` (`pyproject.toml`, `uv.lock`,
+   `src/pokebench/cli.py`, `results_traces.txt`, `CLAUDE.md`, `HANDOFF.md`, `.env`) is
+   reachable. It exits non-zero on any mismatch, so it can be chained onto the deploy.
+   This is the only command in the CLI that makes a network call; it still needs no ROM
+   and no API key, and its tests inject a fake fetcher (`tests/test_site_verify.py`)
+   so the suite keeps its no-network rule.
 
 The repo itself is public, so there is deliberately no GitHub Pages workflow either:
 Pages is one more moving part for no benefit when Vercel already serves the static
