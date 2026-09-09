@@ -17,8 +17,10 @@ from PIL import Image
 
 from pokebench.cli import main
 from pokebench.site import (
+    _cap_split,
     _summary_line,
     build_site,
+    leaderboard_receipt,
     parse_traces_commentary,
     render_index,
     render_run_page,
@@ -869,3 +871,166 @@ def test_summary_line_falls_back_to_a_plain_count_when_no_row_carries_cap_turns(
     line = _summary_line(rows)
     assert "1 model × 1 scenario" in line
     assert "turn-matched" not in line
+
+
+# --- leaderboard receipt: the cap split, machine-readable ---------------------------
+# Issue #1: the HTML explains the turn-cap split well for a human, but a second page,
+# a bot, or a skeptical reader had to scrape prose or re-derive `site.py`'s logic to
+# check it. The receipt publishes the same split as JSON. The tests below pin the two
+# ways a receipt could be worse than nothing: disagreeing with the headline it claims
+# to restate, and repeating the issue's own conflation of "row at another turn cap"
+# (in the artifact, out of the head-to-head count) with "seed the integrity gate threw
+# out" (not in the artifact at all).
+
+
+def _receipt_doc() -> dict:
+    """A `results.json`-shaped doc: four turn-matched models at cap 100 plus one
+    baseline model on TWO different earlier caps, and two seed exclusions carrying
+    the real reason strings `metrics/validity.py` emits."""
+    doc = {"schema": 5, "generated": "2026-08-16T01:48:55", "rows": _rows_for_summary()}
+    doc["rows"][0]["exclusions"] = [
+        {"reason": "cap_mismatch", "stop_reason": "max_usd"},
+        {"reason": "incomplete", "stop_reason": "error"},
+    ]
+    doc["rows"][1]["exclusions"] = [{"reason": "cap_mismatch", "stop_reason": "max_usd"}]
+    return doc
+
+
+def test_receipt_keeps_each_turn_cap_as_its_own_bucket():
+    # The issue sketched a single off-cap bucket. There are three real ones in
+    # results.json (haiku at 300/400/600); collapsing them would publish a cap value
+    # no row actually carries.
+    receipt = leaderboard_receipt(_receipt_doc())
+    assert set(receipt["turn_caps"]) == {"100", "300", "400"}
+    assert receipt["turn_caps"]["300"]["models"] == ["haiku"]
+    assert receipt["turn_caps"]["400"]["models"] == ["haiku"]
+    assert receipt["turn_caps"]["100"]["rows"] == 8
+
+
+def test_receipt_comparison_cap_and_model_split_match_the_rendered_summary_line():
+    # The receipt exists to be checkable against the page. If the two ever disagree
+    # it is worse than not publishing one -- so both read the same `_cap_split`.
+    rows = _rows_for_summary()
+    receipt = leaderboard_receipt({"rows": rows})
+    line = _summary_line(rows)
+    assert receipt["comparison_cap_turns"] == 100
+    assert len(receipt["turn_matched_models"]) == 4
+    assert f"{len(receipt['turn_matched_models'])} turn-matched models" in line
+    assert f"plus {len(receipt['off_cap_models'])} baseline model" in line
+    assert receipt["summary_line"] == line
+
+
+def test_receipt_does_not_call_an_off_cap_model_excluded():
+    # haiku's rows ARE in the artifact -- excluded from the head-to-head count, not
+    # from results.json. Filing them under exclusions would misreport the gate.
+    receipt = leaderboard_receipt(_receipt_doc())
+    assert receipt["off_cap_models"] == ["haiku"]
+    assert "haiku" in receipt["turn_caps"]["300"]["models"]
+    assert "haiku" not in json.dumps(receipt["seed_exclusions"])
+
+
+def test_receipt_counts_seed_exclusions_by_the_reason_strings_the_gate_emits():
+    receipt = leaderboard_receipt(_receipt_doc())
+    assert receipt["seed_exclusions"]["total"] == 3
+    assert receipt["seed_exclusions"]["by_reason"] == {"cap_mismatch": 2, "incomplete": 1}
+    # sourced from the hashed file, and says so, so a reader knows what it covers
+    assert receipt["seed_exclusions"]["source"] == "results.json rows[].exclusions"
+
+
+def test_receipt_falls_back_with_no_comparison_cap_when_no_row_carries_one():
+    receipt = leaderboard_receipt({"rows": [{"model": "gemini", "scenario": "s1"}]})
+    assert receipt["comparison_cap_turns"] is None
+    assert receipt["turn_matched_models"] == []
+    assert receipt["off_cap_models"] == ["gemini"]
+    assert receipt["turn_caps"] == {"unknown": {"models": ["gemini"], "scenarios": ["s1"],
+                                               "rows": 1, "seeds_valid": 0}}
+
+
+def test_cap_split_is_the_one_source_both_the_line_and_the_receipt_read():
+    cap, matched, off_cap = _cap_split(_rows_for_summary())
+    assert cap == 100
+    assert matched == {"gemini", "gpt", "sonnet", "qwen-local"}
+    assert off_cap == {"haiku"}
+
+
+def test_build_site_writes_the_receipt_beside_index_html(tmp_path: Path):
+    results = tmp_path / "results.json"
+    results.write_text(json.dumps(_receipt_doc()), encoding="utf-8")
+    out = tmp_path / "dist"
+
+    build_site(results, out)
+
+    receipt_path = out / "leaderboard-receipt.json"
+    assert receipt_path.exists()
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["comparison_cap_turns"] == 100
+    assert receipt["results_schema"] == 5
+    assert receipt["site_tests"] == "tests/test_site.py"
+
+
+def test_receipt_sha256_is_the_hash_of_the_file_bytes_not_a_reserialisation(tmp_path: Path):
+    # The hash is the whole reason the receipt is checkable, so it must cover the exact
+    # bytes a reader downloads. Written here with CRLF endings and an indent this module
+    # never emits, so every plausible wrong implementation -- hashing `json.dumps(doc)`,
+    # or `read_text()`, whose newline normalisation would silently eat the CRLFs --
+    # produces a different digest and fails. A fixture that round-tripped byte-identically
+    # would let those bugs through.
+    import hashlib
+
+    doc = _receipt_doc()
+    raw = (json.dumps(doc, indent=4) + "\n").replace("\n", "\r\n").encode("utf-8")
+    results = tmp_path / "results.json"
+    results.write_bytes(raw)
+    out = tmp_path / "dist"
+
+    build_site(results, out)
+
+    receipt = json.loads((out / "leaderboard-receipt.json").read_text(encoding="utf-8"))
+    assert receipt["results_sha256"] == hashlib.sha256(raw).hexdigest()
+    for wrong in (json.dumps(doc), json.dumps(doc, indent=2), json.dumps(doc, indent=4)):
+        assert receipt["results_sha256"] != hashlib.sha256(wrong.encode("utf-8")).hexdigest()
+
+
+def test_receipt_ships_the_resume_undercount_caveat_beside_the_exclusion_count():
+    # results.json's exclusions[] are only as complete as the sweep that wrote them:
+    # a cell resumed across invocations can undercount. A bare number would invite the
+    # skeptical reader this file exists for to over-trust it.
+    receipt = leaderboard_receipt(_receipt_doc())
+    assert "--resume" in receipt["seed_exclusions"]["caveat"]
+    assert receipt["seed_exclusions"]["total"] == 3
+
+
+def test_receipt_orders_cap_buckets_numerically_and_never_raises_on_a_non_numeric_key():
+    rows = [
+        {"model": "a", "scenario": "s1", "cap_turns": 100},
+        {"model": "b", "scenario": "s1", "cap_turns": 100},
+        {"model": "c", "scenario": "s1", "cap_turns": 90},
+        {"model": "d", "scenario": "s1"},
+    ]
+    receipt = leaderboard_receipt({"rows": rows})
+    # numeric, not lexical: a plain string sort would put "100" before "90"
+    assert list(receipt["turn_caps"]) == ["90", "100", "unknown"]
+
+
+def test_receipt_carries_no_field_the_hashed_file_cannot_account_for(tmp_path: Path):
+    # results_traces.txt's audited counts (9 excluded seeds, 3 superseded groups) are a
+    # DIFFERENT unit from rows[].exclusions and live in a file the sha256 does not
+    # cover. Mixing them in would make the hash a false guarantee.
+    results = tmp_path / "results.json"
+    results.write_text(json.dumps(_receipt_doc()), encoding="utf-8")
+    traces = tmp_path / "results_traces.txt"
+    traces.write_text(
+        "runs/a/20260101-000000\n"
+        "# EXCLUDED\n"
+        "# reason: something\n"
+        "# runs/b/20260101-000001\n",
+        encoding="utf-8",
+    )
+    out = tmp_path / "dist"
+
+    build_site(results, out, traces)
+
+    receipt = json.loads((out / "leaderboard-receipt.json").read_text(encoding="utf-8"))
+    assert "exclusion_seed_count" not in receipt
+    assert "superseded_group_count" not in receipt
+    assert "run_links" not in json.dumps(receipt)

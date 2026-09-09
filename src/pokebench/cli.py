@@ -619,6 +619,8 @@ def cmd_site_build(args: argparse.Namespace) -> int:
         f"wrote {report.rows} leaderboard row(s) + {report.run_pages} replay page(s) -> "
         f"{report.out_dir}"
     )
+    if report.receipt_path is not None:
+        print(f"wrote machine-readable receipt -> {report.receipt_path}")
     return 0
 
 

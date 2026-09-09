@@ -30,6 +30,7 @@ before it reaches an f-string. `tests/test_site.py` pins this with a synthetic
 from __future__ import annotations
 
 import copy
+import hashlib
 import html
 import json
 import re
@@ -45,6 +46,10 @@ from pokebench.viewer import state_payload
 # others) -- notably NOT `raw/` (the optional per-turn provider-response dump: real
 # disk weight nobody reads server-side) and NEVER a `turn_*.png`.
 _PUBLISHABLE_FILES = ("run.jsonl", "meta.json", "summary.json")
+
+RECEIPT_FILE = "leaderboard-receipt.json"
+# Bumped only when a key changes meaning or disappears; adding a key is not a bump.
+RECEIPT_SCHEMA = 1
 
 S3_SCENARIO_ID = "s3_viridian_forest"
 
@@ -521,6 +526,32 @@ _SHARED_CSS = """
 # `_TRACES_FILE_URL` for the complete prose rather than reproducing it.
 
 
+def _cap_split(rows: list[dict]) -> tuple[int | None, set[str], set[str]]:
+    """(comparison_cap, turn_matched_models, off_cap_models) -- the one place the
+    100-vs-300/400/600 split is decided.
+
+    Extracted so `_summary_line` (the human sentence on the page) and
+    `leaderboard_receipt` (the machine-readable one beside it) cannot drift apart. A
+    receipt that disagreed with the headline it claims to restate would be worse than
+    publishing none at all, which is the whole reason this is a shared helper and not
+    a second implementation of the same rule.
+
+    The comparison cap is derived, never hardcoded: whichever `cap_turns` the most
+    rows share. A model with no row at that cap is *off-cap*, meaning excluded from
+    the head-to-head count -- NOT excluded from the artifact, and never to be reported
+    as an exclusion (see `leaderboard_receipt`).
+    """
+    models = {r.get("model") for r in rows if r.get("model")}
+    caps = Counter(r.get("cap_turns") for r in rows if r.get("cap_turns") is not None)
+    if not caps:
+        return None, set(), models
+    main_cap = caps.most_common(1)[0][0]
+    matched = {
+        r.get("model") for r in rows if r.get("cap_turns") == main_cap and r.get("model")
+    }
+    return main_cap, matched, models - matched
+
+
 def _summary_line(rows: list[dict]) -> str:
     """One true sentence about what the table contains -- the "stronger opening"
     the masthead was missing, sourced from data already sitting on each row
@@ -549,16 +580,7 @@ def _summary_line(rows: list[dict]) -> str:
     # docstring. Derived from the rows, never hardcoded: the comparison cap is
     # whichever `cap_turns` the most rows share, and any model with no row at that
     # cap is reported separately as a baseline rather than folded into the headline.
-    caps = Counter(r.get("cap_turns") for r in rows if r.get("cap_turns") is not None)
-    matched: set = set()
-    if caps:
-        main_cap = caps.most_common(1)[0][0]
-        matched = {
-            r.get("model")
-            for r in rows
-            if r.get("cap_turns") == main_cap and r.get("model")
-        }
-    off_cap = models - matched
+    _main_cap, matched, off_cap = _cap_split(rows)
     if matched:
         head = (
             f"{len(matched)} turn-matched model{'s' if len(matched) != 1 else ''} × "
@@ -579,6 +601,102 @@ def _summary_line(rows: list[dict]) -> str:
         f"{valid_seeds} valid seed-run{'s' if valid_seeds != 1 else ''} — read the "
         "caveat beside any row that isn't a bare score."
     )
+
+
+def leaderboard_receipt(results_doc: dict, results_sha256: str | None = None) -> dict:
+    """`web/dist/leaderboard-receipt.json` -- the turn-cap split as JSON, so a second
+    page, a bot, or a reader who wants to check the leaderboard does not have to
+    scrape prose or re-derive this module's logic first (issue #1).
+
+    **A receipt for exactly one file.** Every field that says anything about the
+    benchmark is derived from `results_doc` alone -- the same bytes `results_sha256`
+    covers. The two exceptions state nothing about the data and are marked as such:
+    `receipt_schema` names this file's own format, and `site_tests` points at where
+    the behaviour is pinned. `results_traces.txt` commentary is deliberately NOT folded
+    in, even though `build_site` has it in hand: its audited counts are a different
+    unit (curated excluded seeds and superseded run *groups*, from a file the hash does
+    not cover), and mixing them in would make the hash look like it vouches for numbers
+    it never saw.
+
+    **`seed_exclusions` is as complete as the file, which is not the same as complete.**
+    It counts what `results.json` records. A cell whose sweep ran across several
+    `--resume` invocations can undercount earlier rejected attempts -- a known, open gap
+    in `runner/sweep.py`, invisible from `results.json` itself -- so the count ships with
+    a `caveat` string rather than a bare number a skeptical reader would over-trust.
+
+    **Off-cap is not excluded, and the two never share a key.** `off_cap_models`
+    (haiku, on the earlier 300/400/600 fixed-turn budgets) are *in* the artifact and
+    out of the head-to-head count; `seed_exclusions` are seeds `metrics/validity.py`
+    rejected as evidence and are not in it at all. Collapsing those into one
+    "excluded" list is the one misreading this file exists to prevent, so each real
+    `cap_turns` value keeps its own bucket rather than being summarised as a single
+    off-cap number that no row actually carries.
+
+    Render, do not recompute (see the module docstring): this counts identity fields
+    and sums `seeds_valid`/`exclusions` that `metrics/results.py::aggregate` already
+    wrote. It derives no metric of its own.
+    """
+    rows = results_doc.get("rows") or []
+    comparison_cap, matched, off_cap = _cap_split(rows)
+
+    buckets: dict[str, dict] = {}
+    for row in rows:
+        cap = row.get("cap_turns")
+        bucket = buckets.setdefault(
+            "unknown" if cap is None else str(cap),
+            {"models": set(), "scenarios": set(), "rows": 0, "seeds_valid": 0},
+        )
+        if row.get("model"):
+            bucket["models"].add(row["model"])
+        if row.get("scenario"):
+            bucket["scenarios"].add(row["scenario"])
+        bucket["rows"] += 1
+        bucket["seeds_valid"] += row.get("seeds_valid") or 0
+
+    by_reason: Counter = Counter()
+    for row in rows:
+        for entry in row.get("exclusions") or []:
+            by_reason[entry.get("reason") or "unspecified"] += 1
+
+    def _cap_sort(item: tuple[str, dict]) -> tuple[int, int, str]:
+        # Numeric caps first, in numeric order; anything else ("unknown", or a
+        # cap_turns a future writer stores as a non-numeric string) sorts after them
+        # alphabetically rather than raising and taking the whole site build with it.
+        key = item[0]
+        return (0, int(key), "") if key.isdigit() else (1, 0, key)
+
+    return {
+        "receipt_schema": RECEIPT_SCHEMA,
+        "results_schema": results_doc.get("schema"),
+        "results_generated": results_doc.get("generated"),
+        "results_sha256": results_sha256,
+        "comparison_cap_turns": comparison_cap,
+        "turn_matched_models": sorted(matched),
+        "off_cap_models": sorted(off_cap),
+        "turn_caps": {
+            cap: {
+                "models": sorted(b["models"]),
+                "scenarios": sorted(b["scenarios"]),
+                "rows": b["rows"],
+                "seeds_valid": b["seeds_valid"],
+            }
+            for cap, b in sorted(buckets.items(), key=_cap_sort)
+        },
+        "seed_exclusions": {
+            "source": "results.json rows[].exclusions",
+            "caveat": (
+                "counts what results.json records; a cell whose sweep ran across "
+                "several --resume invocations can undercount earlier rejected "
+                "attempts -- see web/README.md"
+            ),
+            "total": sum(by_reason.values()),
+            "by_reason": dict(sorted(by_reason.items())),
+        },
+        "rows": len(rows),
+        "seeds_valid": sum(r.get("seeds_valid") or 0 for r in rows),
+        "summary_line": _summary_line(rows),
+        "site_tests": "tests/test_site.py",
+    }
 
 
 def _extract_commands(text: str) -> list[str]:
@@ -1129,6 +1247,7 @@ class SiteBuildReport:
     rows: int
     run_pages: int
     missing_traces: list[str] = field(default_factory=list)
+    receipt_path: Path | None = None
 
 
 def build_site(
@@ -1150,7 +1269,11 @@ def build_site(
     """
     results_path = Path(results_path)
     out_dir = Path(out_dir)
-    doc = json.loads(results_path.read_text(encoding="utf-8"))
+    # Bytes, not text: `results_sha256` must be the hash of the file a reader can
+    # download and check, so it can never be taken over a re-serialised `doc` whose
+    # key order and whitespace differ from what is on disk.
+    results_bytes = results_path.read_bytes()
+    doc = json.loads(results_bytes)
 
     trace_dirs: list[str] = []
     commentary: dict = {}
@@ -1211,9 +1334,16 @@ def build_site(
 
     (out_dir / "index.html").write_text(render_index(enriched), encoding="utf-8")
 
+    # Built from `doc`, not `enriched`: the receipt vouches for the hashed file, and
+    # `enriched` carries run links and traces commentary that hash does not cover.
+    receipt_path = out_dir / RECEIPT_FILE
+    receipt = leaderboard_receipt(doc, hashlib.sha256(results_bytes).hexdigest())
+    receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+
     return SiteBuildReport(
         out_dir=out_dir,
         rows=len(enriched.get("rows", [])),
         run_pages=run_pages,
         missing_traces=missing,
+        receipt_path=receipt_path,
     )

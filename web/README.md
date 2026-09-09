@@ -27,6 +27,48 @@ itself gitignored — generated, not source, the same relationship `runs/` has t
 `results.json`. Rebuild it whenever `results.json` or `results_traces.txt` changes;
 never commit the output.
 
+## `leaderboard-receipt.json`
+
+Alongside `index.html`, the build writes `web/dist/leaderboard-receipt.json` — the same
+turn-cap split the page states in prose, as JSON, so a second page, a bot, or a reader
+checking the table does not have to scrape the HTML or re-derive `site.py`'s logic
+first (raised as [issue #1](https://github.com/Biabuyan/pokebench/issues/1)).
+
+It is a receipt for exactly one file. Every field is derivable from `results.json`
+alone, and `results_sha256` is the hash of that file's raw bytes, so it can be checked
+directly:
+
+```sh
+sha256sum results.json          # matches the receipt's results_sha256
+```
+
+`results_traces.txt`'s curated exclusion counts are deliberately *not* in it, even
+though the builder has them in hand — they are a different unit from `rows[].exclusions`
+and live in a file that hash does not cover, so including them would make the hash look
+like it vouches for numbers it never saw.
+
+Two fields that are easy to conflate and are kept apart on purpose:
+
+- `off_cap_models` — `haiku`, whose rows are the earlier fixed-turn-budget milestone
+  (`cap_turns` 300/400/600, one per scenario). These rows **are** in the artifact; they
+  are excluded from the head-to-head count only. Each cap keeps its own `turn_caps`
+  bucket rather than being flattened into one off-cap number no row carries.
+- `seed_exclusions` — seeds the eval-integrity gate (`metrics/validity.py`) rejected as
+  evidence. These are **not** in the artifact at all.
+
+`summary_line` is the page's own headline sentence verbatim: both it and the receipt
+read one `_cap_split()` in `site.py`, so the JSON cannot drift from the HTML it
+restates. `tests/test_site.py` pins that.
+
+**What `seed_exclusions` does not tell you.** It counts what `results.json` records,
+which is not the same as counting every attempt the sweep made. `pokebench sweep
+--resume` reconstructs only the *valid* seeds of a cell it has already run, so a cell
+that needed several `--resume` invocations keeps only the last invocation's exclusion
+list — earlier rejected attempts are real, and are visible in the trace directories
+under `runs/`, but never reach `results.json`. That gap is open, not fixed, and it is
+invisible from `results.json` alone, so the receipt ships the count with a `caveat`
+string rather than a bare number. Treat `seed_exclusions` as a floor.
+
 **Stack: Python stdlib only** (`src/pokebench/site.py` — `html.escape`, f-strings, no
 Jinja2, no framework, no build step), matching `viewer.py`'s established pattern. The
 dependency set in `pyproject.toml` does not grow for this.
