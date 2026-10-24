@@ -2,6 +2,9 @@
 
 **A fixed agent harness for Pokémon Red where the model is the only variable.**
 
+**Read the write-up:** [*the harness giveth: why no two Pokémon runs are comparable*](blog/the-harness-giveth.md)
+(about 6,700 words: the method, the headline result, and two traces read line by line).
+
 Every famous Pokémon LLM run (Claude's, Gemini's) used a different custom scaffold —
 different tools, different memory, different prompts — so none of the results are
 comparable. PokéBench holds the harness constant: same tools, same memory policy, same
@@ -48,7 +51,7 @@ with RAM-checkable success predicates.
 > rejected seeds are recorded in `results.json` with their reason rather than dropped.
 > Metrics, the N-seed runner, the matrix driver, the `score`/`sweep`/`bench`/`replay` tools,
 > and the static leaderboard generator are all unit-tested without a ROM or API key
-> (276 tests). Next: M5 — the write-up is drafted in `blog/`; publishing and socialising remain.
+> (276 tests). M5 is done: the write-up is in [`blog/the-harness-giveth.md`](blog/the-harness-giveth.md).
 >
 > **A follow-up probe (2 seeds, 500 turns instead of 100, informal — not part of the scored
 > table above) qualifies "nobody solved Viridian Forest, ran out of budget."** At 5× the turn
@@ -162,7 +165,7 @@ uv run pytest                        # 232 unit tests, no ROM needed
 - [x] **M2** Scenario framework + metrics — S1–S3 scenarios + anchor states recorded, N-seed runner, six metrics (incl. stuck-loop + idle rate), `results.json`, `pokebench score`/`bench`/`replay`, and the median-over-3-seeds sweep: haiku/tier-0 has a full S1–S3 row (0/9, ~$6)
 - [x] **M3** Cross-model — OpenAI / Google / Ollama adapters behind the same seam, and the first honest cross-model table: 5 models × S1–S3 × 3 seeds, turn-matched at 100 turns (`results.json`)
 - [x] **M4** Leaderboard + trace viewer (static site) — live at https://pokebench-snowy.vercel.app, built offline with `pokebench site build` and deployed by hand (no CI/auto-deploy)
-- [ ] **M5** Write-up: *the harness giveth — why no two Pokémon runs are comparable*
+- [x] **M5** Write-up: [*the harness giveth — why no two Pokémon runs are comparable*](blog/the-harness-giveth.md)
 
 ## Legal
 

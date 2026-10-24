@@ -1,11 +1,12 @@
 # The write-up (M5)
 
-**Status: drafted.** `the-harness-giveth.md` in this directory is the M5 post — title
+**Status: published in this repo** (public since 2026-08-17; marked done 2026-10-25).
+`the-harness-giveth.md` in this directory is the M5 post — title
 **"the harness giveth: why no two Pokémon runs are comparable"** — written against the
 published `results.json`/`results_traces.txt` and the traces under `runs/`, with every
 figure it uses checked against those artifacts (or the trace files themselves) before
 being used, not transcribed from an earlier draft or from HANDOFF's prose on trust. It has
-not been reviewed or published externally yet.
+not been reviewed externally or posted anywhere outside this repo.
 
 **Correction to this file's own old skeleton, below (kept struck, not deleted, per this
 project's convention of correcting loudly rather than silently editing):**
